@@ -14,8 +14,8 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import QrModalScreen from '../screens/QrModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import WalletScreen from '../screens/WalletScreen';
+import DappsScreen from '../screens/DappsScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import { Ionicons } from '@expo/vector-icons';
@@ -78,7 +78,7 @@ function BottomTabNavigator() {
             }}>
             <BottomTab.Screen
                 name="TabOne"
-                component={TabOneScreen}
+                component={WalletScreen}
                 options={({navigation}: RootTabScreenProps<'TabOne'>) => ({
                     title: 'Wallet',
                     tabBarIcon: ({color}) => <TabBarIcon name="wallet-outline" color={color}/>,
@@ -95,7 +95,7 @@ function BottomTabNavigator() {
             />
             <BottomTab.Screen
                 name="TabTwo"
-                component={TabTwoScreen}
+                component={DappsScreen}
                 options={{
                     title: 'DApps',
                     tabBarIcon: ({color}) => <TabBarIcon name="code-outline" color={color}/>,
@@ -125,7 +125,7 @@ function LoginTabNavigator() {
             />
             <BottomTab.Screen
                 name="TabTwo"
-                component={TabTwoScreen}
+                component={DappsScreen}
                 options={{
                     title: 'Sign up',
                     tabBarIcon: ({color}) => <TabBarIcon name="add-circle-outline" color={color}/>,

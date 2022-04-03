@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 // @ts-ignore
 import balanceBack from '../assets/images/wallet-back.png'
 
-export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>) {
+export default function WalletScreen({navigation}: RootTabScreenProps<'TabOne'>) {
     const balances = {
         xdai: '9999.999999999999999999',
         xbzz: '9999.9999999999999999'

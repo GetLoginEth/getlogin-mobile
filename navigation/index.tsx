@@ -19,6 +19,9 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import { Ionicons } from '@expo/vector-icons';
+import SigninScreen from '../screens/SigninScreen';
+import { selectIsLogged } from '../redux/app/appSlice';
+import { useAppSelector } from '../redux/hooks';
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     return (
@@ -37,9 +40,15 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+    const isLogged = useAppSelector(selectIsLogged);
+
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}}/>
+            {isLogged ?
+                <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}}/> :
+                <Stack.Screen name="Root" component={LoginTabNavigator} options={{headerShown: false}}/>
+            }
+
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{title: 'Oops!'}}/>
             <Stack.Group screenOptions={{presentation: 'modal'}}>
                 <Stack.Screen name="Modal" component={ModalScreen}/>
@@ -75,12 +84,6 @@ function BottomTabNavigator() {
                             style={({pressed}) => ({
                                 opacity: pressed ? 0.5 : 1,
                             })}>
-                            {/*<FontAwesome*/}
-                            {/*  name="info-circle"*/}
-                            {/*  size={25}*/}
-                            {/*  color={Colors[colorScheme].text}*/}
-                            {/*  style={{ marginRight: 15 }}*/}
-                            {/*/>*/}
                             <Ionicons name="qr-code-outline" size={30} color="black" style={{marginRight: 15}}/>
                         </Pressable>
                     ),
@@ -92,6 +95,36 @@ function BottomTabNavigator() {
                 options={{
                     title: 'DApps',
                     tabBarIcon: ({color}) => <TabBarIcon name="code-outline" color={color}/>,
+                }}
+            />
+        </BottomTab.Navigator>
+    );
+}
+
+function LoginTabNavigator() {
+    const colorScheme = useColorScheme();
+
+    return (
+        <BottomTab.Navigator
+            initialRouteName="TabOne"
+            screenOptions={{
+                tabBarActiveTintColor: Colors[colorScheme].tint,
+            }}>
+            <BottomTab.Screen
+                name="TabOne"
+                component={SigninScreen}
+                options={({navigation}: RootTabScreenProps<'TabOne'>) => ({
+                    title: 'Sign in',
+                    tabBarIcon: ({color}) => <TabBarIcon name="at-outline" color={color}/>,
+
+                })}
+            />
+            <BottomTab.Screen
+                name="TabTwo"
+                component={TabTwoScreen}
+                options={{
+                    title: 'Sign up',
+                    tabBarIcon: ({color}) => <TabBarIcon name="add-circle-outline" color={color}/>,
                 }}
             />
         </BottomTab.Navigator>

@@ -1,11 +1,11 @@
-import { Dimensions, ImageBackground, StyleSheet } from 'react-native';
+import { Dimensions, ImageBackground, Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import { Ionicons } from '@expo/vector-icons'
 // @ts-ignore
 import balanceBack from '../assets/images/wallet-back.png'
 
-export default function TabOneScreen({}: RootTabScreenProps<'TabOne'>) {
+export default function TabOneScreen({navigation}: RootTabScreenProps<'TabOne'>) {
     const balances = {
         xdai: '9999.999999999999999999',
         xbzz: '9999.9999999999999999'
@@ -35,14 +35,29 @@ export default function TabOneScreen({}: RootTabScreenProps<'TabOne'>) {
             </View>
 
             <View style={styles.walletButtonsHolder}>
-                <View style={styles.walletButton}>
-                    <Ionicons style={styles.walletIcon} name="arrow-down-circle-outline" size={60} color="black"/>
-                    <Text style={styles.walletButtonTitle}>Receive</Text>
-                </View>
+                <Pressable
+                  onPress={() => navigation.navigate('ReceiveModal')}
+                  style={({pressed}) => ({
+                      opacity: pressed ? 0.5 : 1,
+                  })}
+                >
+                    <View style={styles.walletButton}>
+                        <Ionicons style={styles.walletIcon} name="arrow-down-circle-outline" size={60} color="black"/>
+                        <Text style={styles.walletButtonTitle}>Receive</Text>
+                    </View>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => navigation.navigate('SendModal')}
+                  style={({pressed}) => ({
+                      opacity: pressed ? 0.5 : 1,
+                  })}
+                >
                 <View style={styles.walletButton}>
                     <Ionicons style={styles.walletIcon} name="arrow-up-circle-outline" size={60} color="black"/>
                     <Text style={styles.walletButtonTitle}>Send</Text>
                 </View>
+                </Pressable>
             </View>
         </View>
     );

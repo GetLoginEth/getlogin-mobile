@@ -22,6 +22,8 @@ import { Ionicons } from '@expo/vector-icons';
 import SigninScreen from '../screens/SigninScreen';
 import { selectIsLogged } from '../redux/app/appSlice';
 import { useAppSelector } from '../redux/hooks';
+import ReceiveModalScreen from "../screens/ReceiveModalScreen";
+import SendModalScreen from "../screens/SendModalScreen";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     return (
@@ -52,6 +54,8 @@ function RootNavigator() {
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{title: 'Oops!'}}/>
             <Stack.Group screenOptions={{presentation: 'modal'}}>
                 <Stack.Screen name="Modal" component={QrModalScreen}/>
+                <Stack.Screen name="ReceiveModal" component={ReceiveModalScreen}/>
+                <Stack.Screen name="SendModal" component={SendModalScreen}/>
             </Stack.Group>
         </Stack.Navigator>
     );

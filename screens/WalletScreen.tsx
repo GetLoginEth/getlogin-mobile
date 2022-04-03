@@ -4,12 +4,12 @@ import { RootTabScreenProps } from '../types';
 import { Ionicons } from '@expo/vector-icons'
 // @ts-ignore
 import balanceBack from '../assets/images/wallet-back.png'
+import { selectBalance } from '../redux/app/appSlice';
+import { useAppSelector } from "../redux/hooks";
 
 export default function WalletScreen({navigation}: RootTabScreenProps<'TabOne'>) {
-    const balances = {
-        xdai: '9999.999999999999999999',
-        xbzz: '9999.9999999999999999'
-    };
+    // const dispatch = useAppDispatch();
+    const balance = useAppSelector(selectBalance);
 
     const prepareBalance = (balance: string) => {
         const split = balance.split('.')
@@ -29,8 +29,8 @@ export default function WalletScreen({navigation}: RootTabScreenProps<'TabOne'>)
                                  imageStyle={{borderRadius: 16}}
                                  resizeMode='cover'
                                  style={styles.balanceBack}>
-                    <Text style={styles.balanceText}>{prepareBalance(balances.xdai)} xDai</Text>
-                    <Text style={styles.balanceTextSmall}>{prepareBalance(balances.xbzz)} xBzz</Text>
+                    <Text style={styles.balanceText}>{prepareBalance(balance.xdai)} xDai</Text>
+                    <Text style={styles.balanceTextSmall}>{prepareBalance(balance.xbzz)} xBzz</Text>
                 </ImageBackground>
             </View>
 

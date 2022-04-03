@@ -3,9 +3,9 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
@@ -18,21 +18,20 @@ import WalletScreen from '../screens/WalletScreen';
 import DappsScreen from '../screens/DappsScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
-import { Ionicons } from '@expo/vector-icons';
 import SigninScreen from '../screens/SigninScreen';
-import { selectIsLogged } from '../redux/app/appSlice';
-import { useAppSelector } from '../redux/hooks';
+import { selectIsLogged, setBalance } from '../redux/app/appSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import ReceiveModalScreen from "../screens/ReceiveModalScreen";
 import SendModalScreen from "../screens/SendModalScreen";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
-    return (
-        <NavigationContainer
-            linking={LinkingConfiguration}
-            theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <RootNavigator/>
-        </NavigationContainer>
-    );
+  return (
+    <NavigationContainer
+      linking={LinkingConfiguration}
+      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <RootNavigator/>
+    </NavigationContainer>
+  );
 }
 
 /**
@@ -42,23 +41,31 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
-    const isLogged = useAppSelector(selectIsLogged);
+  const dispatch = useAppDispatch();
 
-    return (
-        <Stack.Navigator>
-            {isLogged ?
-                <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}}/> :
-                <Stack.Screen name="Root" component={LoginTabNavigator} options={{headerShown: false}}/>
-            }
+  const isLogged = useAppSelector(selectIsLogged);
+  setTimeout(() => {
+    // if (!isLogged) {
+    //   return;
+    // }
+    dispatch(setBalance({xdai: '1111.4444444', xbzz: '9999.9999999999999999'}))
+  }, 2000);
 
-            <Stack.Screen name="NotFound" component={NotFoundScreen} options={{title: 'Oops!'}}/>
-            <Stack.Group screenOptions={{presentation: 'modal'}}>
-                <Stack.Screen name="Modal" component={QrModalScreen}/>
-                <Stack.Screen name="ReceiveModal" component={ReceiveModalScreen}/>
-                <Stack.Screen name="SendModal" component={SendModalScreen}/>
-            </Stack.Group>
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator>
+      {isLogged ?
+        <Stack.Screen name="Root" component={BottomTabNavigator} options={{headerShown: false}}/> :
+        <Stack.Screen name="Root" component={LoginTabNavigator} options={{headerShown: false}}/>
+      }
+
+      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{title: 'Oops!'}}/>
+      <Stack.Group screenOptions={{presentation: 'modal'}}>
+        <Stack.Screen name="Modal" component={QrModalScreen}/>
+        <Stack.Screen name="ReceiveModal" component={ReceiveModalScreen}/>
+        <Stack.Screen name="SendModal" component={SendModalScreen}/>
+      </Stack.Group>
+    </Stack.Navigator>
+  );
 }
 
 /**
@@ -68,80 +75,80 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
-    const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();
 
-    return (
-        <BottomTab.Navigator
-            initialRouteName="TabOne"
-            screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme].tint,
-            }}>
-            <BottomTab.Screen
-                name="TabOne"
-                component={WalletScreen}
-                options={({navigation}: RootTabScreenProps<'TabOne'>) => ({
-                    title: 'Wallet',
-                    tabBarIcon: ({color}) => <TabBarIcon name="wallet-outline" color={color}/>,
-                    headerRight: () => (
-                        <Pressable
-                            onPress={() => navigation.navigate('Modal')}
-                            style={({pressed}) => ({
-                                opacity: pressed ? 0.5 : 1,
-                            })}>
-                            <Ionicons name="qr-code-outline" size={30} color="black" style={{marginRight: 15}}/>
-                        </Pressable>
-                    ),
-                })}
-            />
-            <BottomTab.Screen
-                name="TabTwo"
-                component={DappsScreen}
-                options={{
-                    title: 'DApps',
-                    tabBarIcon: ({color}) => <TabBarIcon name="code-outline" color={color}/>,
-                }}
-            />
-        </BottomTab.Navigator>
-    );
+  return (
+    <BottomTab.Navigator
+      initialRouteName="TabOne"
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme].tint,
+      }}>
+      <BottomTab.Screen
+        name="TabOne"
+        component={WalletScreen}
+        options={({navigation}: RootTabScreenProps<'TabOne'>) => ({
+          title: 'Wallet',
+          tabBarIcon: ({color}) => <TabBarIcon name="wallet-outline" color={color}/>,
+          headerRight: () => (
+            <Pressable
+              onPress={() => navigation.navigate('Modal')}
+              style={({pressed}) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <Ionicons name="qr-code-outline" size={30} color="black" style={{marginRight: 15}}/>
+            </Pressable>
+          ),
+        })}
+      />
+      <BottomTab.Screen
+        name="TabTwo"
+        component={DappsScreen}
+        options={{
+          title: 'DApps',
+          tabBarIcon: ({color}) => <TabBarIcon name="code-outline" color={color}/>,
+        }}
+      />
+    </BottomTab.Navigator>
+  );
 }
 
 function LoginTabNavigator() {
-    const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();
 
-    return (
-        <BottomTab.Navigator
-            initialRouteName="TabOne"
-            screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme].tint,
-            }}>
-            <BottomTab.Screen
-                name="TabOne"
-                component={SigninScreen}
-                options={({navigation}: RootTabScreenProps<'TabOne'>) => ({
-                    title: 'Sign in',
-                    tabBarIcon: ({color}) => <TabBarIcon name="at-outline" color={color}/>,
+  return (
+    <BottomTab.Navigator
+      initialRouteName="TabOne"
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme].tint,
+      }}>
+      <BottomTab.Screen
+        name="TabOne"
+        component={SigninScreen}
+        options={({navigation}: RootTabScreenProps<'TabOne'>) => ({
+          title: 'Sign in',
+          tabBarIcon: ({color}) => <TabBarIcon name="at-outline" color={color}/>,
 
-                })}
-            />
-            <BottomTab.Screen
-                name="TabTwo"
-                component={DappsScreen}
-                options={{
-                    title: 'Sign up',
-                    tabBarIcon: ({color}) => <TabBarIcon name="add-circle-outline" color={color}/>,
-                }}
-            />
-        </BottomTab.Navigator>
-    );
+        })}
+      />
+      <BottomTab.Screen
+        name="TabTwo"
+        component={DappsScreen}
+        options={{
+          title: 'Sign up',
+          tabBarIcon: ({color}) => <TabBarIcon name="add-circle-outline" color={color}/>,
+        }}
+      />
+    </BottomTab.Navigator>
+  );
 }
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-    name: React.ComponentProps<typeof Ionicons>['name'];
-    color: string;
+  name: React.ComponentProps<typeof Ionicons>['name'];
+  color: string;
 }) {
-    // return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-    return <Ionicons size={30} style={{marginBottom: -3}} {...props} />;
+  // return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+  return <Ionicons size={30} style={{marginBottom: -3}} {...props} />;
 }

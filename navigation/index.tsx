@@ -15,7 +15,7 @@ import useColorScheme from '../hooks/useColorScheme';
 import QrModalScreen from '../screens/QrModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import WalletScreen from '../screens/WalletScreen';
-import DappsScreen from '../screens/DappsScreen';
+import DAppsScreen from '../screens/DAppsScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import SigninScreen from '../screens/SigninScreen';
@@ -23,6 +23,7 @@ import { selectIsLogged, setBalance } from '../redux/app/appSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import ReceiveModalScreen from "../screens/ReceiveModalScreen";
 import SendModalScreen from "../screens/SendModalScreen";
+import SignupScreen from "../screens/SignupScreen";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
   return (
@@ -102,7 +103,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="TabTwo"
-        component={DappsScreen}
+        component={DAppsScreen}
         options={{
           title: 'DApps',
           tabBarIcon: ({color}) => <TabBarIcon name="code-outline" color={color}/>,
@@ -132,7 +133,7 @@ function LoginTabNavigator() {
       />
       <BottomTab.Screen
         name="TabTwo"
-        component={DappsScreen}
+        component={SignupScreen}
         options={{
           title: 'Sign up',
           tabBarIcon: ({color}) => <TabBarIcon name="add-circle-outline" color={color}/>,

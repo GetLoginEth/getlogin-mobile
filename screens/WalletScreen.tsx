@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 import balanceBack from '../assets/images/wallet-back.png'
 import { selectBalance } from '../redux/app/appSlice'
 import { useAppSelector } from '../redux/hooks'
+import { Instances } from '../Instances'
 
 export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   // const dispatch = useAppDispatch();
@@ -32,8 +33,12 @@ export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'
           resizeMode="cover"
           style={styles.balanceBack}
         >
-          <Text style={styles.balanceText}>{prepareBalance(balance.xdai)} xDai</Text>
-          <Text style={styles.balanceTextSmall}>{prepareBalance(balance.xbzz)} xBzz</Text>
+          <Text style={styles.balanceText}>
+            {prepareBalance(balance.xdai)} {Instances.data?.currency}
+          </Text>
+          <Text style={styles.balanceTextSmall}>
+            {prepareBalance(balance.xbzz)} {Instances.data?.bzz.name}
+          </Text>
         </ImageBackground>
       </View>
 

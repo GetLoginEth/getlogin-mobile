@@ -3,16 +3,25 @@ import { Contract, providers } from 'ethers'
 import dataAbi from './services/glDataAbi.json'
 import logicAbi from './services/glLogicAbi.json'
 
+export interface NetworkDescription {
+  id: number
+  jsonRpcProvider: string
+  currency: string
+  explorerUrl: string
+  bzz: { address: string; name: string }
+}
+
 export class Instances {
   static getLogin: GetLogin | undefined
+  static data: NetworkDescription | undefined
 
   static get getGetLogin() {
-    const REACT_APP_NETWORK = 'xdai'
+    const REACT_APP_NETWORK = 'poa'
     const REACT_APP_NETWORKS = {
       poa: {
         id: 77,
         jsonRpcProvider: 'https://sokol.poa.network',
-        currency: 'xPoa',
+        currency: 'sPoa',
         explorerUrl: 'https://blockscout.com/poa/sokol/tx/',
         bzz: { address: '0xe14848E35424aff947E5aF94f9196538149a72fB', name: 'sBZZ' },
       },
@@ -27,8 +36,13 @@ export class Instances {
     const data = REACT_APP_NETWORKS[REACT_APP_NETWORK]
     const providerUrl = data.jsonRpcProvider
 
+    // todo move to state
+    if (Instances.data === undefined) {
+      Instances.data = data
+    }
+
     if (Instances.getLogin === undefined) {
-      // todo or get them from abi?
+      // todo or get them from abi/.env?
       const dataAddress = '0xCaC5144CDf47C4e5BB58D572E56234510f818D81'
       const logicAddress = '0x96aa32F603C8f813C74479Bb4973ec4b46Ad2adE'
       const dataContract = new Contract(dataAddress, dataAbi.abi, new providers.JsonRpcProvider(providerUrl))

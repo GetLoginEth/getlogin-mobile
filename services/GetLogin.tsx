@@ -3,6 +3,9 @@ import { Contract, utils, Wallet } from 'ethers'
 export class GetLogin {
   constructor(public dataContract: Contract, public logicContract: Contract) {}
 
+  /**
+   * Logins with username and password
+   */
   async login(username: string, password: string): Promise<Wallet> {
     const usernameHash = utils.keccak256(utils.toUtf8Bytes(username))
     const filters = await this.dataContract.filters['EventStoreWallet(bytes32,address,string,string,string,string)'](

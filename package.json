@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll",
+    "test": "jest",
     "lint": "eslint --fix \"**/*.tsx\" && prettier --write \"**/*.tsx\"",
     "lint:check": "eslint \"screens/**/*.tsx\" && prettier --check \"screens/**/*.tsx\""
   },

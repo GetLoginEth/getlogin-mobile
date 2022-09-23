@@ -1,16 +1,12 @@
 import { Keyboard, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { Text, View } from '../components/Themed'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { setIsLogged } from '../redux/app/appSlice'
 import { Instances } from '../Instances'
 import { selectSigninInfo, setSigninInfo } from '../redux/login/loginSlice'
 import React from 'react'
 
 const DismissKeyboard = (data: any) => (
-  <TouchableWithoutFeedback
-    onPress={() => Keyboard.dismiss()}>
-    {data.children}
-  </TouchableWithoutFeedback>
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{data.children}</TouchableWithoutFeedback>
 )
 
 export default function SigninScreen() {
@@ -21,10 +17,8 @@ export default function SigninScreen() {
     <DismissKeyboard>
       <View style={styles.container}>
         <Text style={styles.title}>Sign in screen</Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)"/>
-        <Text
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">
           Hello world
         </Text>
 
@@ -32,7 +26,7 @@ export default function SigninScreen() {
           style={styles.input}
           autoCapitalize="none"
           onChangeText={value => {
-            dispatch(setSigninInfo({...signinInfo, username: value}))
+            dispatch(setSigninInfo({ ...signinInfo, username: value }))
           }}
           value={signinInfo.username}
           placeholder="Username"
@@ -41,7 +35,7 @@ export default function SigninScreen() {
         <TextInput
           style={styles.input}
           onChangeText={value => {
-            dispatch(setSigninInfo({...signinInfo, password: value}))
+            dispatch(setSigninInfo({ ...signinInfo, password: value }))
           }}
           value={signinInfo.password}
           textContentType={'password'}
@@ -55,16 +49,18 @@ export default function SigninScreen() {
         {/*  <Text>Login fake!</Text>*/}
         {/*</TouchableOpacity>*/}
 
-        <TouchableOpacity onPress={async () => {
-          const gl = Instances.getGetLogin
-          // todo set status start login
-          try {
-            await gl.login(signinInfo.username, signinInfo.password)
-            // todo set ok login
-          } catch (e) {
-            // todo set status error login
-          }
-        }}>
+        <TouchableOpacity
+          onPress={async () => {
+            const gl = Instances.getGetLogin
+            // todo set status start login
+            try {
+              await gl.login(signinInfo.username, signinInfo.password)
+              // todo set ok login
+            } catch (e) {
+              // todo set status error login
+            }
+          }}
+        >
           <Text>TEST Login</Text>
         </TouchableOpacity>
       </View>

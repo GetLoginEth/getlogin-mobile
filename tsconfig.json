@@ -1,6 +1,26 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+//    "lib": [
+//      "ES2021.String",
+//      "dom"
+//    ],
+//    "alwaysStrict": true,
+//    "target": "ES6",
+//    "esModuleInterop": true,
+//    "skipLibCheck": true,
+//    "allowSyntheticDefaultImports": true,
+//    "moduleResolution": "node",
+//    "module": "commonjs",
+//    "resolveJsonModule": true,
+//    "experimentalDecorators": true,
+//    "emitDecoratorMetadata": true,
+//    "typeRoots": [
+//      "./src/pod/types", "node_modules/@types"
+//    ],
+//    "rootDirs": ["src"],
+//    "outDir": "dist"
+  },
+  "include": ["."],
 }

@@ -1,47 +1,107 @@
-import { Keyboard, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import { Text, View } from '../components/Themed'
+import { Dimensions, StyleSheet, Animated, Easing } from 'react-native'
+import { View } from '../components/Themed'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { Instances } from '../Instances'
 import { selectSigninInfo, setSigninInfo } from '../redux/login/loginSlice'
-import React from 'react'
-
-const DismissKeyboard = (data: any) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{data.children}</TouchableWithoutFeedback>
-)
+import React, { useRef } from 'react'
+import logo from '../assets/images/icon.png'
+import { selectInitInfo } from '../redux/init/initSlice'
+import { Button, Input, Layout, Text } from '@ui-kitten/components'
+import { Instances } from '../Instances'
+import { DismissKeyboard } from '../utils/ui'
+import general from '../styles/general'
 
 export default function SigninScreen() {
   const dispatch = useAppDispatch()
   const signinInfo = useAppSelector(selectSigninInfo)
+  const initState = useAppSelector(selectInitInfo)
+  const rotateAnimation = useRef(new Animated.Value(0)).current
+  const animationTime = 1000
+  const animationChangeValue = 3
+  const animate = () => {
+    Animated.sequence([
+      Animated.timing(rotateAnimation, {
+        useNativeDriver: true,
+        toValue: animationChangeValue,
+        easing: Easing.linear,
+        duration: animationTime,
+      }),
+      Animated.timing(rotateAnimation, {
+        useNativeDriver: true,
+        toValue: 0,
+        easing: Easing.linear,
+        duration: animationTime,
+      }),
+      Animated.timing(rotateAnimation, {
+        useNativeDriver: true,
+        toValue: -animationChangeValue,
+        easing: Easing.linear,
+        duration: animationTime,
+      }),
+      Animated.timing(rotateAnimation, {
+        useNativeDriver: true,
+        toValue: 0,
+        easing: Easing.linear,
+        duration: animationTime,
+      }),
+    ]).start(() => {
+      animate()
+    })
+  }
+  // animate()
+
+  const spin = rotateAnimation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  })
 
   return (
     <DismissKeyboard>
       <View style={styles.container}>
-        <Text style={styles.title}>Sign in screen</Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">
-          Hello world
-        </Text>
+        <View style={styles.balanceContainer}>
+          <Animated.Image
+            style={[
+              styles.logo,
+              {
+                transform: [{ rotate: spin }],
+              },
+            ]}
+            source={logo}
+          />
+        </View>
 
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          onChangeText={value => {
-            dispatch(setSigninInfo({ ...signinInfo, username: value }))
-          }}
-          value={signinInfo.username}
-          placeholder="Username"
-        />
+        {initState.mnemonic && initState.username && !initState.isLogged && (
+          <Text
+          // lightColor="rgba(0,0,0,0.8)"
+          // darkColor="rgba(255,255,255,0.8)"
+          >
+            Fast login with user: {initState.username}
+          </Text>
+        )}
 
-        <TextInput
-          style={styles.input}
-          onChangeText={value => {
-            dispatch(setSigninInfo({ ...signinInfo, password: value }))
-          }}
-          value={signinInfo.password}
-          textContentType={'password'}
-          secureTextEntry={true}
-          placeholder="Password"
-        />
+        <Layout style={general.rowContainer} level="1">
+          <Input
+            style={general.input}
+            autoCapitalize="none"
+            placeholder="Username"
+            value={signinInfo.username}
+            onChangeText={value => {
+              dispatch(setSigninInfo({ ...signinInfo, username: value }))
+            }}
+          />
+        </Layout>
+
+        <Layout style={general.rowContainer} level="1">
+          <Input
+            style={general.input}
+            placeholder="Password"
+            value={signinInfo.password}
+            onChangeText={value => {
+              dispatch(setSigninInfo({ ...signinInfo, password: value }))
+            }}
+            textContentType="password"
+            secureTextEntry={true}
+          />
+        </Layout>
 
         {/*<TouchableOpacity onPress={() => {*/}
         {/*  dispatch(setIsLogged(true))*/}
@@ -49,20 +109,22 @@ export default function SigninScreen() {
         {/*  <Text>Login fake!</Text>*/}
         {/*</TouchableOpacity>*/}
 
-        <TouchableOpacity
-          onPress={async () => {
-            const gl = Instances.getGetLogin
-            // todo set status start login
-            try {
-              await gl.login(signinInfo.username, signinInfo.password)
-              // todo set ok login
-            } catch (e) {
-              // todo set status error login
-            }
-          }}
-        >
-          <Text>TEST Login</Text>
-        </TouchableOpacity>
+        <Layout style={general.rowContainer} level="1">
+          <Button
+            onPress={async () => {
+              const gl = Instances.getGetLogin
+              // todo set status start login
+              try {
+                await gl.login(signinInfo.username, signinInfo.password)
+                // todo set ok login
+              } catch (e) {
+                // todo set status error login
+              }
+            }}
+          >
+            {evaProps => <Text {...evaProps}>Sign in</Text>}
+          </Button>
+        </Layout>
       </View>
     </DismissKeyboard>
   )
@@ -83,11 +145,29 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
-  input: {
-    width: '80%',
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
+  // input: {
+  //   width: '80%',
+  //   height: 40,
+  //   margin: 12,
+  //   borderWidth: 1,
+  //   padding: 10,
+  // },
+  balanceContainer: {
+    // width:'100%',
+    // flex: 1,
+    // flexDirection: 'column',
+  },
+  balanceBack: {
+    // flex: 1,
+    justifyContent: 'center',
+    // textAlignVertical:'center',
+    // alignItems:'center',
+    width: Dimensions.get('window').width * 0.9,
+    height: 180,
     padding: 10,
+  },
+  logo: {
+    width: 180,
+    height: 180,
   },
 })

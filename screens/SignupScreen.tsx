@@ -1,13 +1,19 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
-import { Text, View } from '../components/Themed'
+import { View } from '../components/Themed'
 import { useAppDispatch } from '../redux/hooks'
 import { RootTabScreenProps } from '../types'
+import { Button, Icon, Layout, Text } from '@ui-kitten/components'
+import general from '../styles/general'
+import signup from '../styles/signup'
+import React from 'react'
+
+const EditOutline = (props: any) => <Icon {...props} name="edit-outline" />
+const CreditCardOutline = (props: any) => <Icon {...props} name="credit-card-outline" />
 
 export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'>) {
   const dispatch = useAppDispatch()
 
   return (
-    <View style={styles.container}>
+    <View style={general.container}>
       {/*<Text style={styles.title}>Sign up</Text>*/}
       {/*<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />*/}
       {/*<Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">*/}
@@ -26,23 +32,39 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
       {/*  Welcome*/}
       {/*</UI.Text>*/}
 
-      <TouchableOpacity
-        style={{
-          marginTop: 20,
-        }}
-        onPress={() => navigation.navigate('Create Wallet')}
-      >
-        <Text>Create a wallet</Text>
-      </TouchableOpacity>
+      <Text style={{ ...general.text, ...signup.wallet, marginBottom: 15 }} category="h1">
+        Wallet
+      </Text>
 
-      <TouchableOpacity
-        style={{
-          marginTop: 20,
-        }}
-        onPress={() => navigation.navigate('Import Mnemonic')}
-      >
-        <Text>I already have a wallet</Text>
-      </TouchableOpacity>
+      <View style={general.viewCorner}>
+        <Layout style={{ ...general.rowContainer, ...signup.createWallet }} level="1">
+          <Text style={{ ...general.text, ...general.greenText }} category="h3">
+            Create a wallet
+          </Text>
+        </Layout>
+
+        <Layout style={general.rowContainer} level="1">
+          <Button
+            accessoryLeft={EditOutline}
+            style={{ ...general.button, ...general.greenButton }}
+            onPress={() => navigation.navigate('Create Wallet')}
+          >
+            {evaProps => <Text {...evaProps}>Create a wallet</Text>}
+          </Button>
+        </Layout>
+
+        <Layout style={general.rowContainer} level="1">
+          <Button
+            accessoryLeft={CreditCardOutline}
+            appearance="ghost"
+            status={'basic'}
+            style={{ ...general.button }}
+            onPress={() => navigation.navigate('Import Mnemonic')}
+          >
+            {evaProps => <Text {...evaProps}>I already have a wallet</Text>}
+          </Button>
+        </Layout>
+      </View>
 
       {/*<TouchableOpacity*/}
       {/*  style={{*/}
@@ -82,33 +104,5 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
       {/*  <Text>Register with exists wallet</Text>*/}
       {/*</TouchableOpacity>*/}
     </View>
-    // <UI.View flex paddingH-25 paddingT-120>
-    //   <UI.Text blue50 text20>
-    //     Welcome
-    //   </UI.Text>
-    //   <UI.TextField text50 placeholder="username" grey10 />
-    //   <UI.TextField text50 placeholder="password" secureTextEntry grey10 />
-    //   <UI.View marginT-100 center>
-    //     <UI.Button text70 white background-orange30 label="Login" />
-    //     <UI.Button link text70 orange30 label="Sign Up" marginT-20 />
-    //   </UI.View>
-    // </UI.View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-})

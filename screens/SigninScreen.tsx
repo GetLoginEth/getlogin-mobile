@@ -56,7 +56,7 @@ export default function SigninScreen() {
 
   return (
     <DismissKeyboard>
-      <View style={styles.container}>
+      <View style={{ ...general.container, ...{ alignItems: 'center' } }}>
         <View style={styles.balanceContainer}>
           <Animated.Image
             style={[
@@ -111,6 +111,7 @@ export default function SigninScreen() {
 
         <Layout style={general.rowContainer} level="1">
           <Button
+            style={{ ...general.button, ...general.greenButton }}
             onPress={async () => {
               const gl = Instances.getGetLogin
               // todo set status start login
@@ -131,11 +132,6 @@ export default function SigninScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -145,13 +141,6 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
-  // input: {
-  //   width: '80%',
-  //   height: 40,
-  //   margin: 12,
-  //   borderWidth: 1,
-  //   padding: 10,
-  // },
   balanceContainer: {
     // width:'100%',
     // flex: 1,

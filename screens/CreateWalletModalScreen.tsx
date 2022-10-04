@@ -4,12 +4,13 @@ import { Text, View } from '../components/Themed'
 import React, { useEffect, useState } from 'react'
 import { setAccountMnemonic } from '../services/Storage'
 import { Instances } from '../Instances'
-import { Button, Input, Layout } from '@ui-kitten/components'
+import { Button, Input, Layout, Spinner } from '@ui-kitten/components'
 import { DismissKeyboard } from '../utils/ui'
 
 export default function CreateWalletModalScreen() {
   const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')
+  const [isGenerating, setIsGenerating] = useState(true)
 
   useEffect(() => {
     async function start() {
@@ -21,6 +22,7 @@ export default function CreateWalletModalScreen() {
       setMnemonic(wallet.mnemonic.phrase)
       await setAccountMnemonic(wallet.mnemonic.phrase)
       // todo hide spinner
+      setIsGenerating(false)
     }
 
     setTimeout(() => {
@@ -33,27 +35,29 @@ export default function CreateWalletModalScreen() {
   return (
     <DismissKeyboard>
       <View style={styles.container}>
-        <Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">
-          Address: {address}
-        </Text>
+        {isGenerating && <Spinner size="giant" />}
 
-        {/*<Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">*/}
-        {/*  Mnemonic: {mnemonic}*/}
-        {/*</Text>*/}
-        <Layout style={styles.rowContainer} level="1">
-          <Input multiline={true} textStyle={{ minHeight: 64 }} value={mnemonic} editable={false} />
-        </Layout>
+        {!isGenerating && (
+          <>
+            <Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">
+              Address: {address}
+            </Text>
 
-        <Layout style={styles.rowContainer} level="1">
-          <Button
-            onPress={async () => {
-              console.log('click')
-            }}
-          >
-            {evaProps => <Text {...evaProps}>Next</Text>}
-          </Button>
-        </Layout>
+            <Layout style={styles.rowContainer} level="1">
+              <Input multiline={true} textStyle={{ minHeight: 64 }} value={mnemonic} editable={false} />
+            </Layout>
 
+            <Layout style={styles.rowContainer} level="1">
+              <Button
+                onPress={async () => {
+                  console.log('click')
+                }}
+              >
+                {evaProps => <Text {...evaProps}>Next</Text>}
+              </Button>
+            </Layout>
+          </>
+        )}
         {/* Use a light status bar on iOS to account for the black space above the modal */}
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
       </View>

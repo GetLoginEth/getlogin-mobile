@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
+import { Platform, TouchableOpacity } from 'react-native'
 import { Text, View } from '../components/Themed'
 import React, { useState } from 'react'
 import { setAccountMnemonic } from '../services/Storage'
@@ -12,7 +12,7 @@ export default function ImportMnemonicModalScreen() {
 
   return (
     <DismissKeyboard>
-      <View style={styles.container}>
+      <View style={general.container}>
         <Layout style={general.rowContainer} level="1">
           <Input multiline={true} textStyle={{ minHeight: 64 }} value={mnemonic} onChangeText={setMnemonic} />
         </Layout>
@@ -46,20 +46,3 @@ export default function ImportMnemonicModalScreen() {
     </DismissKeyboard>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-})

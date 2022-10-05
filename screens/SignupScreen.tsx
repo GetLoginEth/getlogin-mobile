@@ -1,7 +1,7 @@
 import { View } from '../components/Themed'
 import { useAppDispatch } from '../redux/hooks'
 import { RootTabScreenProps } from '../types'
-import { Button, Icon, Layout, Text } from '@ui-kitten/components'
+import { Button, Icon, Layout, Spinner, Text } from '@ui-kitten/components'
 import general from '../styles/general'
 import signup from '../styles/signup'
 import React from 'react'
@@ -14,26 +14,8 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
 
   return (
     <View style={general.container}>
-      {/*<Text style={styles.title}>Sign up</Text>*/}
-      {/*<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />*/}
-      {/*<Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">*/}
-      {/*  Hello world*/}
-      {/*</Text>*/}
-
-      {/*<TouchableOpacity*/}
-      {/*  onPress={() => {*/}
-      {/*    dispatch(setIsLogged(true))*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <Text>Login fake!</Text>*/}
-      {/*</TouchableOpacity>*/}
-
-      {/*<UI.Text blue50 text20>*/}
-      {/*  Welcome*/}
-      {/*</UI.Text>*/}
-
-      <Text style={{ ...general.text, ...signup.wallet, marginBottom: 15 }} category="h1">
-        Wallet
+      <Text style={[general.text, signup.wallet, { marginBottom: 15 }]} category="h1">
+        Sign up
       </Text>
 
       <View style={general.viewCorner}>
@@ -46,7 +28,7 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
         <Layout style={general.rowContainer} level="1">
           <Button
             accessoryLeft={EditOutline}
-            style={{ ...general.button, ...general.greenButton }}
+            style={[general.button, general.greenButton]}
             onPress={() => navigation.navigate('Create Wallet')}
           >
             {evaProps => <Text {...evaProps}>Create a wallet</Text>}
@@ -58,7 +40,7 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
             accessoryLeft={CreditCardOutline}
             appearance="ghost"
             status={'basic'}
-            style={{ ...general.button }}
+            style={general.button}
             onPress={() => navigation.navigate('Import Mnemonic')}
           >
             {evaProps => <Text {...evaProps}>I already have a wallet</Text>}

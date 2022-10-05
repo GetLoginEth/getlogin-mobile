@@ -1,6 +1,6 @@
 import React from 'react'
 
-const useInputState = (initialValue = '') => {
+export const useInputState = (initialValue = '') => {
   const [value, setValue] = React.useState(initialValue)
 
   return { value, onChangeText: setValue }

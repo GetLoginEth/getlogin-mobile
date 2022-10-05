@@ -3,7 +3,7 @@ import { Contract, providers } from 'ethers'
 import dataAbi from './api/glDataAbi.json'
 import logicAbi from './api/glLogicAbi.json'
 import { setInitInfo } from './redux/init/initSlice'
-import { getAccountIsLogged, getAccountMnemonic, getAccountUsername } from './services/Storage'
+import { getAccountIsLogged, getAccountMnemonic, getAccountUsername } from './services/storage'
 import { Dispatch } from 'redux'
 
 export interface ABIAddress {

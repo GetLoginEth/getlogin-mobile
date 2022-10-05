@@ -49,7 +49,8 @@
     "react-native-screens": "~3.15.0",
     "react-native-svg": "12.3.0",
     "react-native-web": "0.18.9",
-    "react-redux": "^8.0.4"
+    "react-redux": "^8.0.4",
+    "expo-clipboard": "~3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.1",

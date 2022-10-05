@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
+  textarea: {
+    width: '100%',
+  },
   text: {
     margin: 2,
   },

@@ -1,18 +1,20 @@
 import { Dimensions, StyleSheet, Animated, Easing } from 'react-native'
 import { View } from '../components/Themed'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { selectSigninInfo, setSigninInfo } from '../redux/login/loginSlice'
 import React, { useRef } from 'react'
 import logo from '../assets/images/icon.png'
 import { selectInitInfo } from '../redux/init/initSlice'
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
-import { Instances } from '../Instances'
 import { DismissKeyboard } from '../utils/ui'
 import general from '../styles/general'
+import { useInputState } from '../utils/state'
+import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../constants/user'
 
 export default function SigninScreen() {
   const dispatch = useAppDispatch()
-  const signinInfo = useAppSelector(selectSigninInfo)
+  // const signinInfo = useAppSelector(selectSigninInfo)
+  const username = useInputState()
+  const password = useInputState()
   const initState = useAppSelector(selectInitInfo)
   const rotateAnimation = useRef(new Animated.Value(0)).current
   const animationTime = 1000
@@ -70,12 +72,7 @@ export default function SigninScreen() {
         </View>
 
         {initState.mnemonic && initState.username && !initState.isLogged && (
-          <Text
-          // lightColor="rgba(0,0,0,0.8)"
-          // darkColor="rgba(255,255,255,0.8)"
-          >
-            Fast login with user: {initState.username}
-          </Text>
+          <Text>Fast login with user: {initState.username}</Text>
         )}
 
         <Layout style={general.rowContainer} level="1">
@@ -83,10 +80,11 @@ export default function SigninScreen() {
             style={general.input}
             autoCapitalize="none"
             placeholder="Username"
-            value={signinInfo.username}
-            onChangeText={value => {
-              dispatch(setSigninInfo({ ...signinInfo, username: value }))
-            }}
+            {...username}
+            // value={signinInfo.username}
+            // onChangeText={value => {
+            //   dispatch(setSigninInfo({ ...signinInfo, username: value }))
+            // }}
           />
         </Layout>
 
@@ -94,10 +92,11 @@ export default function SigninScreen() {
           <Input
             style={general.input}
             placeholder="Password"
-            value={signinInfo.password}
-            onChangeText={value => {
-              dispatch(setSigninInfo({ ...signinInfo, password: value }))
-            }}
+            {...password}
+            // value={signinInfo.password}
+            // onChangeText={value => {
+            //   dispatch(setSigninInfo({ ...signinInfo, password: value }))
+            // }}
             textContentType="password"
             secureTextEntry={true}
           />
@@ -111,16 +110,17 @@ export default function SigninScreen() {
 
         <Layout style={general.rowContainer} level="1">
           <Button
-            style={{ ...general.button, ...general.greenButton }}
+            style={[general.button, general.greenButton]}
+            disabled={username.value.length < USERNAME_MIN_LENGTH || password.value.length < PASSWORD_MIN_LENGTH}
             onPress={async () => {
-              const gl = Instances.getGetLogin
-              // todo set status start login
-              try {
-                await gl.login(signinInfo.username, signinInfo.password)
-                // todo set ok login
-              } catch (e) {
-                // todo set status error login
-              }
+              // const gl = Instances.getGetLogin
+              // // todo set status start login
+              // try {
+              //   await gl.login(signinInfo.username, signinInfo.password)
+              //   // todo set ok login
+              // } catch (e) {
+              //   // todo set status error login
+              // }
             }}
           >
             {evaProps => <Text {...evaProps}>Sign in</Text>}

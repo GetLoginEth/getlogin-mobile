@@ -1,16 +1,23 @@
 import { StatusBar } from 'expo-status-bar'
-import { Platform, StyleSheet } from 'react-native'
+import { Platform } from 'react-native'
+import * as Clipboard from 'expo-clipboard'
 import { Text, View } from '../components/Themed'
 import React, { useEffect, useState } from 'react'
-import { setAccountMnemonic } from '../services/Storage'
+import { setAccountMnemonic } from '../services/storage'
 import { Instances } from '../Instances'
-import { Button, Input, Layout, Spinner } from '@ui-kitten/components'
+import { Button, Icon, Input, Layout, Spinner } from '@ui-kitten/components'
 import { DismissKeyboard } from '../utils/ui'
+import general from '../styles/general'
+import { utils } from 'ethers'
+
+export const MIN_BALANCE = '0.01'
 
 export default function CreateWalletModalScreen() {
+  // const mnemonic = useInputState()
   const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')
   const [isGenerating, setIsGenerating] = useState(true)
+  const CopyOutline = (props: any) => <Icon {...props} name="copy-outline" />
 
   useEffect(() => {
     async function start() {
@@ -34,26 +41,72 @@ export default function CreateWalletModalScreen() {
 
   return (
     <DismissKeyboard>
-      <View style={styles.container}>
-        {isGenerating && <Spinner size="giant" />}
+      <View style={general.container}>
+        {isGenerating && (
+          <Layout style={[general.rowContainer, { justifyContent: 'center' }]} level="1">
+            <Spinner size="giant" />
+          </Layout>
+        )}
 
         {!isGenerating && (
           <>
-            <Text lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)">
-              Address: {address}
-            </Text>
-
-            <Layout style={styles.rowContainer} level="1">
-              <Input multiline={true} textStyle={{ minHeight: 64 }} value={mnemonic} editable={false} />
+            <Layout style={general.rowContainer} level="1">
+              <Input
+                style={general.input}
+                label="Address"
+                autoCapitalize="none"
+                value={address}
+                editable={false}
+                accessoryRight={
+                  <Button
+                    appearance="ghost"
+                    accessoryLeft={CopyOutline}
+                    onPress={() => {
+                      Clipboard.setString(address)
+                    }}
+                  />
+                }
+              />
             </Layout>
 
-            <Layout style={styles.rowContainer} level="1">
+            <Layout style={[general.rowContainer]} level="1">
+              <Input
+                style={general.textarea}
+                editable={false}
+                label="Mnemonic phrase"
+                autoCapitalize="none"
+                multiline={true}
+                textStyle={{ minHeight: 64 }}
+                value={mnemonic}
+                accessoryRight={
+                  <Button
+                    appearance="ghost"
+                    accessoryLeft={CopyOutline}
+                    onPress={() => {
+                      Clipboard.setString(mnemonic)
+                    }}
+                  />
+                }
+              />
+            </Layout>
+
+            <Layout style={general.rowContainer} level="1">
               <Button
+                style={[general.button, general.greenButton]}
                 onPress={async () => {
-                  console.log('click')
+                  console.log('getting balance...')
+                  const balance = await Instances.getGetLogin.dataContract.provider.getBalance(address)
+                  console.log('balance', balance)
+                  const val = utils.parseUnits(MIN_BALANCE, 'ether')
+                  console.log('val', val)
+                  console.log('is >= 0.01', balance.gte(val))
+
+                  if (balance.gte(val)) {
+                    // todo show next step with username registration
+                  }
                 }}
               >
-                {evaProps => <Text {...evaProps}>Next</Text>}
+                {evaProps => <Text {...evaProps}>Check balance</Text>}
               </Button>
             </Layout>
           </>
@@ -64,32 +117,3 @@ export default function CreateWalletModalScreen() {
     </DismissKeyboard>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  // todo merge with signin styles and move to separated file
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  controlContainer: {
-    borderRadius: 4,
-    margin: 2,
-    padding: 6,
-    backgroundColor: '#3366FF',
-  },
-})

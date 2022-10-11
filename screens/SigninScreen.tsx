@@ -8,7 +8,8 @@ import { Button, Input, Layout, Text } from '@ui-kitten/components'
 import { DismissKeyboard } from '../utils/ui'
 import general from '../styles/general'
 import { useInputState } from '../utils/state'
-import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../constants/user'
+import { Instances } from '../Instances'
+import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../utils/user'
 
 export default function SigninScreen() {
   const dispatch = useAppDispatch()
@@ -76,16 +77,7 @@ export default function SigninScreen() {
         )}
 
         <Layout style={general.rowContainer} level="1">
-          <Input
-            style={general.input}
-            autoCapitalize="none"
-            placeholder="Username"
-            {...username}
-            // value={signinInfo.username}
-            // onChangeText={value => {
-            //   dispatch(setSigninInfo({ ...signinInfo, username: value }))
-            // }}
-          />
+          <Input style={general.input} autoCapitalize="none" placeholder="Username" {...username} />
         </Layout>
 
         <Layout style={general.rowContainer} level="1">
@@ -110,17 +102,20 @@ export default function SigninScreen() {
 
         <Layout style={general.rowContainer} level="1">
           <Button
-            style={[general.button, general.greenButton]}
-            disabled={username.value.length < USERNAME_MIN_LENGTH || password.value.length < PASSWORD_MIN_LENGTH}
+            style={[general.button]}
+            status="success"
+            disabled={username.value.trim().length < USERNAME_MIN_LENGTH || password.value.length < PASSWORD_MIN_LENGTH}
             onPress={async () => {
               // const gl = Instances.getGetLogin
               // // todo set status start login
-              // try {
-              //   await gl.login(signinInfo.username, signinInfo.password)
-              //   // todo set ok login
-              // } catch (e) {
-              //   // todo set status error login
-              // }
+              try {
+                await Instances.getGetLogin.login(username.value.trim(), password.value)
+                console.log('login ok')
+                // todo set ok login
+              } catch (e) {
+                console.log('login error', e)
+                // todo set status error login
+              }
             }}
           >
             {evaProps => <Text {...evaProps}>Sign in</Text>}

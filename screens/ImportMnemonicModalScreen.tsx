@@ -1,39 +1,41 @@
 import { StatusBar } from 'expo-status-bar'
-import { Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import { View } from '../components/Themed'
 import { Text } from '@ui-kitten/components'
 import React from 'react'
-import { setAccountMnemonic } from '../services/storage'
 import { DismissKeyboard } from '../utils/ui'
 import { Button, Input, Layout } from '@ui-kitten/components'
 import general from '../styles/general'
 import { useInputState } from '../utils/state'
-import signup from '../styles/signup'
+import signupStyles from '../styles/signup'
+import { STEP_CREATE, STEP_DONE, STEP_SIGNUP } from './create-wallet/CreateWalletModalScreen'
+import { Wallet } from 'ethers'
+import { isAddressUsed, isEnoughBalance, isUsernameRegisteredByAddressUsername } from '../api/GetLoginUtils'
+import { isMnemonicLength, USERNAME_MIN_LENGTH } from '../utils/user'
 
-export const MNEMONIC_WORDS = 12
-export function isMnemonicLength(mnemonic: string): boolean {
-  return (
-    mnemonic
-      .split(' ')
-      .map(item => item.trim())
-      .filter(item => Boolean(item)).length === MNEMONIC_WORDS
-  )
-}
-
-export default function ImportMnemonicModalScreen() {
+export default function ImportMnemonicModalScreen({ navigation }) {
   const mnemonic = useInputState()
-  // const username = useInputState()
+  const username = useInputState()
+
+  const createAlert = () =>
+    Alert.alert('Information', 'The mnemonic is not assigned to the username. Fix your info and try again.', [
+      {
+        text: 'OK',
+      },
+    ])
 
   return (
     <DismissKeyboard>
       <View style={general.container}>
-        <Text style={[general.text, signup.wallet, { marginBottom: 15 }]} category="h1">
-          Import Mnemonic
-        </Text>
+        <Layout style={{ ...general.rowContainer, ...signupStyles.createWallet }} level="1">
+          <Text style={{ ...general.text, ...general.greenText }} category="h3">
+            Import mnemonic
+          </Text>
+        </Layout>
 
-        {/*<Layout style={general.rowContainer} level="1">*/}
-        {/*  <Input style={general.input} placeholder="Username" autoCapitalize="none" {...username} />*/}
-        {/*</Layout>*/}
+        <Layout style={general.rowContainer} level="1">
+          <Input style={general.input} autoCapitalize="none" placeholder="Username" {...username} />
+        </Layout>
 
         <Layout style={[general.rowContainer]} level="1">
           <Input
@@ -48,11 +50,16 @@ export default function ImportMnemonicModalScreen() {
 
         <Layout style={general.rowContainer} level="1">
           <Button
-            style={[general.button, general.greenButton]}
-            // disabled={!isMnemonicLength(mnemonic.value) || !username.value}
-            disabled={!isMnemonicLength(mnemonic.value)}
+            style={[general.button]}
+            status="success"
+            disabled={!isMnemonicLength(mnemonic.value) || username.value.trim().length < USERNAME_MIN_LENGTH}
             onPress={async () => {
               const value = mnemonic.value
+
+              const navigateToStep = (step: string) => {
+                navigation.goBack()
+                navigation.navigate('Create Wallet', { step, mnemonic: value, username: username.value })
+              }
 
               if (!isMnemonicLength(value)) {
                 // todo show alert or display in specific place
@@ -61,10 +68,24 @@ export default function ImportMnemonicModalScreen() {
                 return
               }
 
-              // todo check is address assigned with username
-              // todo ask user about username if it is assigned to some username
+              // todo open spinner while getting balance and username availability
+              const wallet = Wallet.fromMnemonic(value)
 
-              await setAccountMnemonic(value)
+              if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
+                console.log('step 1')
+                navigateToStep(STEP_DONE)
+              } else if (await isAddressUsed(wallet.address)) {
+                console.log('step 11')
+                createAlert()
+              } else if (await isEnoughBalance(wallet.address)) {
+                console.log('step 2')
+
+                navigateToStep(STEP_SIGNUP)
+              } else {
+                console.log('step 3')
+
+                navigateToStep(STEP_CREATE)
+              }
             }}
           >
             {evaProps => <Text {...evaProps}>Import</Text>}

@@ -1,12 +1,44 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+export interface LoggedUser {
+  username: string | null
+  mnemonic: string | null
+  isLogged: boolean
+}
+
 export const ACCOUNT_MNEMONIC_KEY = 'account_mnemonic'
 export const ACCOUNT_USERNAME_KEY = 'account_username'
 export const ACCOUNT_IS_LOGGED_KEY = 'account_is_logged'
 
+export async function setLogged(username: string, mnemonic: string): Promise<void> {
+  return AsyncStorage.multiSet([
+    [ACCOUNT_USERNAME_KEY, username],
+    [ACCOUNT_MNEMONIC_KEY, mnemonic],
+    [ACCOUNT_IS_LOGGED_KEY, 'true'],
+  ])
+}
+
+export async function resetLogged(): Promise<void> {
+  return AsyncStorage.multiSet([
+    [ACCOUNT_USERNAME_KEY, ''],
+    [ACCOUNT_MNEMONIC_KEY, ''],
+    [ACCOUNT_IS_LOGGED_KEY, ''],
+  ])
+}
+
+export async function getLogged(): Promise<LoggedUser> {
+  const data = await AsyncStorage.multiGet([ACCOUNT_USERNAME_KEY, ACCOUNT_MNEMONIC_KEY, ACCOUNT_IS_LOGGED_KEY])
+
+  return {
+    username: data[0][1],
+    mnemonic: data[1][1],
+    isLogged: Boolean(data[2][1]),
+  }
+}
+
 export async function setAccountMnemonic(mnemonic: string): Promise<void> {
   // todo save to encrypted storage
-  await AsyncStorage.setItem(ACCOUNT_MNEMONIC_KEY, mnemonic)
+  return AsyncStorage.setItem(ACCOUNT_MNEMONIC_KEY, mnemonic)
 }
 
 export async function getAccountMnemonic(): Promise<string | null> {

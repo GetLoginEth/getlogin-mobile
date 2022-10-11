@@ -17,10 +17,21 @@ export class GetLogin {
    *
    * @param address Ethereum wallet address
    */
-  async isAddressAssignedToUser(address: string): Promise<boolean> {
+  async isAddressAssigned(address: string): Promise<boolean> {
     const response = await this.dataContract.callStatic.UsersAddressUsername(address)
 
     return response.length > 0 ? Boolean(response[0]) : false
+  }
+
+  async isAddressAssignedToUsername(address: string, username: string): Promise<boolean> {
+    const usernameHash = utils.keccak256(utils.toUtf8Bytes(username))
+    const response = await this.dataContract.callStatic.UsersAddressUsername(address)
+
+    if (response.length > 0) {
+      return response[1] === usernameHash
+    } else {
+      return false
+    }
   }
 
   /**

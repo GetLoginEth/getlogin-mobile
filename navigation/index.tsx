@@ -13,7 +13,7 @@ import DAppsScreen from '../screens/DAppsScreen'
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types'
 import LinkingConfiguration from './LinkingConfiguration'
 import SigninScreen from '../screens/SigninScreen'
-import { selectIsLogged, setBalance } from '../redux/app/appSlice'
+import { selectIsLogged, setBalance, setIsLogged } from '../redux/app/appSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import ReceiveModalScreen from '../screens/ReceiveModalScreen'
 import SendModalScreen from '../screens/SendModalScreen'
@@ -21,7 +21,9 @@ import SignupScreen from '../screens/SignupScreen'
 import ImportMnemonicModalScreen from '../screens/ImportMnemonicModalScreen'
 import { useEffect } from 'react'
 import { Instances } from '../Instances'
-import CreateWalletModalScreen from '../screens/CreateWalletModalScreen'
+import CreateWalletModalScreen from '../screens/create-wallet/CreateWalletModalScreen'
+import { getLogged } from '../services/storage'
+import SettingsScreen from '../screens/SettingsScreen'
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -40,7 +42,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 function RootNavigator() {
   const dispatch = useAppDispatch()
   useEffect(() => {
-    Instances.init(dispatch)
+    Instances.init(dispatch).then()
+    // todo loader while get these values to not blink screens
+    getLogged().then(data => {
+      if (data.isLogged) {
+        dispatch(setIsLogged(true))
+      }
+    })
   }, [])
 
   const isLogged = useAppSelector(selectIsLogged)
@@ -54,7 +62,7 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       {isLogged ? (
-        <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Root" component={LoggedTabNavigator} options={{ headerShown: false }} />
       ) : (
         <Stack.Screen name="Root" component={LoginTabNavigator} options={{ headerShown: false }} />
       )}
@@ -77,7 +85,7 @@ function RootNavigator() {
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>()
 
-function BottomTabNavigator() {
+function LoggedTabNavigator() {
   const colorScheme = useColorScheme()
 
   return (
@@ -113,6 +121,14 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="code-outline" color={color} />,
         }}
       />
+      <BottomTab.Screen
+        name="TabSettings"
+        component={SettingsScreen}
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <TabBarIcon name="settings-outline" color={color} />,
+        }}
+      />
     </BottomTab.Navigator>
   )
 }
@@ -130,7 +146,7 @@ function LoginTabNavigator() {
       <BottomTab.Screen
         name="TabOne"
         component={SigninScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
+        options={() => ({
           title: 'Sign in',
           tabBarIcon: ({ color }) => <TabBarIcon name="at-outline" color={color} />,
         })}
@@ -151,6 +167,5 @@ function LoginTabNavigator() {
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
-  // return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />
 }

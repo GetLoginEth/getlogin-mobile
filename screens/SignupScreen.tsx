@@ -1,7 +1,7 @@
 import { View } from '../components/Themed'
 import { useAppDispatch } from '../redux/hooks'
 import { RootTabScreenProps } from '../types'
-import { Button, Icon, Layout, Spinner, Text } from '@ui-kitten/components'
+import { Button, Icon, Layout, Text } from '@ui-kitten/components'
 import general from '../styles/general'
 import signup from '../styles/signup'
 import React from 'react'
@@ -27,8 +27,9 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
 
         <Layout style={general.rowContainer} level="1">
           <Button
+            style={[general.button]}
+            status="success"
             accessoryLeft={EditOutline}
-            style={[general.button, general.greenButton]}
             onPress={() => navigation.navigate('Create Wallet')}
           >
             {evaProps => <Text {...evaProps}>Create a wallet</Text>}
@@ -47,44 +48,6 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
           </Button>
         </Layout>
       </View>
-
-      {/*<TouchableOpacity*/}
-      {/*  style={{*/}
-      {/*    marginTop: 20,*/}
-      {/*  }}*/}
-      {/*  onPress={async () => {*/}
-      {/*    const mnemonic = await getAccountMnemonic()*/}
-
-      {/*    if (!mnemonic) {*/}
-      {/*      console.log('Mnemonic not found in local storage')*/}
-
-      {/*      return*/}
-      {/*    }*/}
-
-      {/*    const rpcUrl = Instances.data?.jsonRpcProvider*/}
-
-      {/*    if (!rpcUrl) {*/}
-      {/*      console.log('Incorrect rpc url')*/}
-
-      {/*      return*/}
-      {/*    }*/}
-
-      {/*    console.log('rpcUrl', rpcUrl)*/}
-      {/*    const wallet = Wallet.fromMnemonic(mnemonic).connect(new JsonRpcProvider(rpcUrl))*/}
-      {/*    console.log(wallet)*/}
-      {/*    // console.log(await Instances.getGetLogin.getGlobalSettings(wallet))*/}
-      {/*    console.log(await Instances.getGetLogin.isAddressAssignedToUser(wallet.address))*/}
-      {/*    // try {*/}
-      {/*    //   const data = await (await Instances.getGetLogin.createUser('hello1', wallet)).wait()*/}
-      {/*    //   console.log(data)*/}
-      {/*    // } catch (e) {*/}
-      {/*    //   console.log(e)*/}
-      {/*    //   console.log('can not create a user')*/}
-      {/*    // }*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <Text>Register with exists wallet</Text>*/}
-      {/*</TouchableOpacity>*/}
     </View>
   )
 }

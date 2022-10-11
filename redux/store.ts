@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import appReducer from './app/appSlice'
 import loginReducer from './login/loginSlice'
+import initReducer from './init/initSlice'
 
 export const store = configureStore({
   reducer: {
     counter: appReducer,
     login: loginReducer,
+    init: initReducer,
   },
 })
 

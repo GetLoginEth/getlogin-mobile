@@ -1,7 +1,18 @@
-import { GetLogin } from './services/GetLogin'
+import { GetLogin } from './api/GetLogin'
 import { Contract, providers } from 'ethers'
-import dataAbi from './services/glDataAbi.json'
-import logicAbi from './services/glLogicAbi.json'
+import dataAbi from './api/glDataAbi.json'
+import logicAbi from './api/glLogicAbi.json'
+import { setInitInfo } from './redux/init/initSlice'
+import { getAccountIsLogged, getAccountMnemonic, getAccountUsername } from './services/storage'
+import { Dispatch } from 'redux'
+
+export interface ABIAddress {
+  networks: { [key: string]: Network }
+}
+
+export interface Network {
+  address: string
+}
 
 export interface NetworkDescription {
   id: number
@@ -15,7 +26,20 @@ export class Instances {
   static getLogin: GetLogin | undefined
   static data: NetworkDescription | undefined
 
+  static async init(dispatch: Dispatch) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    Instances.getGetLogin
+    dispatch(
+      setInitInfo({
+        mnemonic: await getAccountMnemonic(),
+        username: await getAccountUsername(),
+        isLogged: await getAccountIsLogged(),
+      }),
+    )
+  }
+
   static get getGetLogin() {
+    // todo get network id from .env
     const REACT_APP_NETWORK = 'poa'
     const REACT_APP_NETWORKS = {
       poa: {
@@ -42,9 +66,8 @@ export class Instances {
     }
 
     if (Instances.getLogin === undefined) {
-      // todo or get them from abi/.env?
-      const dataAddress = '0xCaC5144CDf47C4e5BB58D572E56234510f818D81'
-      const logicAddress = '0x96aa32F603C8f813C74479Bb4973ec4b46Ad2adE'
+      const dataAddress = (dataAbi as ABIAddress).networks[data.id].address
+      const logicAddress = (logicAbi as ABIAddress).networks[data.id].address
       const dataContract = new Contract(dataAddress, dataAbi.abi, new providers.JsonRpcProvider(providerUrl))
       const logicContract = new Contract(logicAddress, logicAbi.abi)
       Instances.getLogin = new GetLogin(dataContract, logicContract)

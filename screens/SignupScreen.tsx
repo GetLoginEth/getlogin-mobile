@@ -1,19 +1,19 @@
 import { View } from '../components/Themed'
-import { useAppDispatch } from '../redux/hooks'
 import { RootTabScreenProps } from '../types'
 import { Button, Icon, Layout, Text } from '@ui-kitten/components'
 import general from '../styles/general'
 import signup from '../styles/signup'
 import React from 'react'
+import LoadingModal from './modal/LoadingModal'
 
 const EditOutline = (props: any) => <Icon {...props} name="edit-outline" />
 const CreditCardOutline = (props: any) => <Icon {...props} name="credit-card-outline" />
 
 export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'>) {
-  const dispatch = useAppDispatch()
-
   return (
     <View style={general.container}>
+      <LoadingModal />
+
       <Text style={[general.text, signup.wallet, { marginBottom: 15 }]} category="h1">
         Sign up
       </Text>

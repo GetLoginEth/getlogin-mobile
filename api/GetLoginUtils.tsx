@@ -4,15 +4,32 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { MIN_BALANCE } from '../utils/user'
 
 /**
+ * Gets balance suitable for displaying on UI
+ */
+export async function getUIBalance(address: string): Promise<string> {
+  return utils.formatEther(await Instances.getGetLogin.dataContract.provider.getBalance(address))
+}
+
+/**
+ * Checks is enough balance by UI value of balance
+ */
+export function isUIBalanceEnough(balance: string): boolean {
+  const bnBalance = utils.parseUnits(balance, 'ether')
+  const value = utils.parseUnits(MIN_BALANCE, 'ether')
+
+  return bnBalance.gte(value)
+}
+
+/**
  * Checks is enough balance on address
  *
  * @param address address to check
  */
 export async function isEnoughBalance(address: string): Promise<boolean> {
   const balance = await Instances.getGetLogin.dataContract.provider.getBalance(address)
-  const val = utils.parseUnits(MIN_BALANCE, 'ether')
+  const value = utils.parseUnits(MIN_BALANCE, 'ether')
 
-  return balance.gte(val)
+  return balance.gte(value)
 }
 
 /**
@@ -53,4 +70,20 @@ export async function isUsernameRegisteredByAddressUsername(address: string, use
  */
 export async function isAddressUsed(address: string): Promise<boolean> {
   return Instances.getGetLogin.isAddressAssigned(address)
+}
+
+/**
+ * Checks if username registered
+ */
+export async function isUsernameRegistered(username: string): Promise<boolean> {
+  return Instances.getGetLogin.isUsernameRegistered(username)
+}
+
+/**
+ * Asserts that username registered
+ */
+export async function assertUsernameAvailable(username: string): Promise<void> {
+  if (await isUsernameRegistered(username)) {
+    throw new Error('Username already registered')
+  }
 }

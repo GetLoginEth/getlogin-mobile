@@ -1,13 +1,15 @@
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
 import general from '../../styles/general'
-import React from 'react'
+import React, { useState } from 'react'
 import { useInputState } from '../../utils/state'
-import { signup } from '../../api/GetLoginUtils'
+import { assertUsernameAvailable, isUsernameRegistered, signup } from '../../api/GetLoginUtils'
 import signupStyles from '../../styles/signup'
 import { USERNAME_MIN_LENGTH } from '../../utils/user'
+import { LoaderOutline } from '../../utils/ui'
 
 export default function StepSignup({ mnemonic, onNextStep }) {
   const username = useInputState()
+  const [loading, setLoading] = useState(false)
 
   return (
     <>
@@ -25,25 +27,28 @@ export default function StepSignup({ mnemonic, onNextStep }) {
         <Button
           style={[general.button]}
           status="success"
-          disabled={username.value.trim().length < USERNAME_MIN_LENGTH}
-          onPress={async () => {
-            try {
-              // todo show spinner
-              console.log('singup...', username.value.trim(), mnemonic)
-              await signup(username.value.trim(), mnemonic)
-              console.log('signup ok')
+          disabled={username.value.trim().length < USERNAME_MIN_LENGTH || loading}
+          accessoryLeft={<LoaderOutline loading={loading} />}
+          onPress={() => {
+            setLoading(true)
 
-              if (onNextStep) {
-                // todo pass other data for storing in local storage of a device
-                onNextStep(username)
+            setTimeout(async () => {
+              try {
+                const usernamePrepared = username.value.trim()
+                await assertUsernameAvailable(usernamePrepared)
+                await signup(usernamePrepared, mnemonic)
+
+                if (onNextStep) {
+                  onNextStep(username.value)
+                }
+              } catch (e) {
+                console.log('signup error')
+                console.log(e)
+                // todo show error on UI
+              } finally {
+                setLoading(false)
               }
-            } catch (e) {
-              console.log('signup error')
-              console.log(e)
-              // todo show error on UI
-            } finally {
-              // todo hide spinner
-            }
+            }, 10)
           }}
         >
           {evaProps => <Text {...evaProps}>Sign up</Text>}

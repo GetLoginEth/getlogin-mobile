@@ -1,12 +1,21 @@
-import { Button, Icon, Input, Layout } from '@ui-kitten/components'
+import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components'
 import general from '../../styles/general'
 import * as Clipboard from 'expo-clipboard'
-import { Text } from '../../components/Themed'
-import React from 'react'
-import { isEnoughBalance } from '../../api/GetLoginUtils'
-import { Animated } from 'react-native'
+import React, { useState } from 'react'
+import { getUIBalance, isUIBalanceEnough } from '../../api/GetLoginUtils'
+import { LoaderOutline } from '../../utils/ui'
 
-export default function StepCreate({ mnemonic, address, onNextStep }) {
+export default function StepCreate({
+  mnemonic,
+  address,
+  onNextStep,
+}: {
+  mnemonic: string
+  address: string
+  onNextStep: () => void
+}) {
+  const [loading, setLoading] = useState(false)
+  const [currentBalance, setCurrentBalance] = useState('0.0')
   const CopyOutline = (props: any) => <Icon {...props} name="copy-outline" />
 
   return (
@@ -51,13 +60,39 @@ export default function StepCreate({ mnemonic, address, onNextStep }) {
         />
       </Layout>
 
-      <Layout style={general.rowContainer} level="1">
+      <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
+        <Text>
+          In order to register an account, you need to top-up your account with at least{' '}
+          <Text style={{ fontWeight: 'bold' }}>0.01 xDai</Text>
+        </Text>
+      </Layout>
+
+      <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
+        <Text>
+          Current balance: <Text style={{ fontWeight: 'bold' }}>{currentBalance} xDai</Text>
+        </Text>
+      </Layout>
+
+      <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
         <Button
           style={[general.button]}
           status="success"
+          disabled={loading}
+          accessoryLeft={<LoaderOutline loading={loading} />}
           onPress={async () => {
-            if ((await isEnoughBalance(address)) && onNextStep) {
-              onNextStep()
+            setLoading(true)
+
+            try {
+              const uiBalance = await getUIBalance(address)
+              setCurrentBalance(uiBalance)
+
+              if (isUIBalanceEnough(uiBalance) && onNextStep) {
+                onNextStep()
+              }
+              // eslint-disable-next-line no-empty
+            } catch (e) {
+            } finally {
+              setLoading(false)
             }
           }}
         >

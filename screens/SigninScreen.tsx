@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, Animated, Easing } from 'react-native'
 import { View } from '../components/Themed'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import React, { useRef } from 'react'
+import { useAppSelector } from '../redux/hooks'
+import React, { useEffect, useRef } from 'react'
 import logo from '../assets/images/icon.png'
 import { selectInitInfo } from '../redux/init/initSlice'
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
@@ -10,10 +10,9 @@ import general from '../styles/general'
 import { useInputState } from '../utils/state'
 import { Instances } from '../Instances'
 import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../utils/user'
+import LoadingModal from './modal/LoadingModal'
 
 export default function SigninScreen() {
-  const dispatch = useAppDispatch()
-  // const signinInfo = useAppSelector(selectSigninInfo)
   const username = useInputState()
   const password = useInputState()
   const initState = useAppSelector(selectInitInfo)
@@ -60,6 +59,7 @@ export default function SigninScreen() {
   return (
     <DismissKeyboard>
       <View style={{ ...general.container, ...{ alignItems: 'center' } }}>
+        {/*<LoadingModal />*/}
         <View style={styles.balanceContainer}>
           <Animated.Image
             style={[

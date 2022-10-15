@@ -2,8 +2,8 @@ import { StatusBar } from 'expo-status-bar'
 import { Alert, Platform } from 'react-native'
 import { View } from '../components/Themed'
 import { Text } from '@ui-kitten/components'
-import React from 'react'
-import { DismissKeyboard } from '../utils/ui'
+import React, { useState } from 'react'
+import { DismissKeyboard, LoaderOutline } from '../utils/ui'
 import { Button, Input, Layout } from '@ui-kitten/components'
 import general from '../styles/general'
 import { useInputState } from '../utils/state'
@@ -16,6 +16,7 @@ import { isMnemonicLength, USERNAME_MIN_LENGTH } from '../utils/user'
 export default function ImportMnemonicModalScreen({ navigation }) {
   const mnemonic = useInputState()
   const username = useInputState()
+  const [loading, setLoading] = useState(false)
 
   const createAlert = () =>
     Alert.alert('Information', 'The mnemonic is not assigned to the username. Fix your info and try again.', [
@@ -23,6 +24,8 @@ export default function ImportMnemonicModalScreen({ navigation }) {
         text: 'OK',
       },
     ])
+
+  console.log('loading', loading)
 
   return (
     <DismissKeyboard>
@@ -52,7 +55,10 @@ export default function ImportMnemonicModalScreen({ navigation }) {
           <Button
             style={[general.button]}
             status="success"
-            disabled={!isMnemonicLength(mnemonic.value) || username.value.trim().length < USERNAME_MIN_LENGTH}
+            disabled={
+              !isMnemonicLength(mnemonic.value) || username.value.trim().length < USERNAME_MIN_LENGTH || loading
+            }
+            accessoryLeft={<LoaderOutline loading={loading} />}
             onPress={async () => {
               const value = mnemonic.value
 
@@ -68,24 +74,40 @@ export default function ImportMnemonicModalScreen({ navigation }) {
                 return
               }
 
-              // todo open spinner while getting balance and username availability
-              const wallet = Wallet.fromMnemonic(value)
+              // openLoader(navigation)
+              setLoading(true)
 
-              if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
-                console.log('step 1')
-                navigateToStep(STEP_DONE)
-              } else if (await isAddressUsed(wallet.address)) {
-                console.log('step 11')
-                createAlert()
-              } else if (await isEnoughBalance(wallet.address)) {
-                console.log('step 2')
+              // workaround to prevent freezing from `Wallet.fromMnemonic`
+              setTimeout(async () => {
+                let finalStep
+                try {
+                  const wallet = Wallet.fromMnemonic(value)
 
-                navigateToStep(STEP_SIGNUP)
-              } else {
-                console.log('step 3')
+                  if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
+                    console.log('step 1')
+                    finalStep = () => navigateToStep(STEP_DONE)
+                  } else if (await isAddressUsed(wallet.address)) {
+                    console.log('step 11')
+                    createAlert()
+                  } else if (await isEnoughBalance(wallet.address)) {
+                    console.log('step 2')
+                    finalStep = () => navigateToStep(STEP_SIGNUP)
+                  } else {
+                    console.log('step 3')
 
-                navigateToStep(STEP_CREATE)
-              }
+                    finalStep = () => navigateToStep(STEP_CREATE)
+                  }
+                  // eslint-disable-next-line no-empty
+                } catch (e) {
+                } finally {
+                  // closeLoader(navigation)
+                  setLoading(false)
+
+                  if (finalStep) {
+                    finalStep()
+                  }
+                }
+              }, 1)
             }}
           >
             {evaProps => <Text {...evaProps}>Import</Text>}

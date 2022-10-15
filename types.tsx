@@ -19,6 +19,7 @@ export type RootStackParamList = {
   SendModal: undefined
   ReceiveModal: undefined
   NotFound: undefined
+  Loader: undefined
   'Import Mnemonic': undefined
   'Create Wallet': undefined
 }

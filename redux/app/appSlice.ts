@@ -3,6 +3,7 @@ import { RootState } from '../store'
 
 export interface AppState {
   isLogged: boolean
+  isModal: boolean
   status: 'idle' | 'loading' | 'failed'
   balanceXdai: string
   balanceXbzz: string
@@ -10,6 +11,7 @@ export interface AppState {
 
 const initialState: AppState = {
   isLogged: false,
+  isModal: false,
   status: 'idle',
   balanceXdai: '0',
   balanceXbzz: '0',
@@ -33,6 +35,9 @@ export const appSlice = createSlice({
     setIsLogged: (state, action: PayloadAction<boolean>) => {
       state.isLogged = action.payload
     },
+    setIsModal: (state, action: PayloadAction<boolean>) => {
+      state.isModal = action.payload
+    },
     setBalance: (state, action: PayloadAction<{ xdai: string; xbzz: string }>) => {
       state.balanceXdai = action.payload.xdai
       state.balanceXbzz = action.payload.xbzz
@@ -52,7 +57,7 @@ export const appSlice = createSlice({
   },
 })
 
-export const { setIsLogged, setBalance } = appSlice.actions
+export const { setIsModal, setIsLogged, setBalance } = appSlice.actions
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
@@ -60,6 +65,7 @@ export const { setIsLogged, setBalance } = appSlice.actions
 // export const selectCount = (state: RootState) => state.counter.value;
 export const selectStatus = (state: RootState) => state.counter.status
 export const selectIsLogged = (state: RootState) => state.counter.isLogged
+export const selectIsModal = (state: RootState) => state.counter.isModal
 export const selectBalance = (state: RootState) => ({
   xdai: state.counter.balanceXdai,
   xbzz: state.counter.balanceXbzz,

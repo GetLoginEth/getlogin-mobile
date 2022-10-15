@@ -25,37 +25,35 @@ export default function CreateWalletModalScreen({ route, navigation }) {
   const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')
   const [username, setUsername] = useState('')
-  const [isGenerating, setIsGenerating] = useState(true)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
     async function start() {
-      // todo show spinner
       const wallet = Instances.getGetLogin.createWallet()
-      console.log(wallet.address)
-      console.log(wallet.mnemonic.phrase)
       setAddress(wallet.address)
       setMnemonic(wallet.mnemonic.phrase)
       await setAccountMnemonic(wallet.mnemonic.phrase)
-      // todo hide spinner
       setIsGenerating(false)
     }
 
     const { mnemonic, step, username } = route.params || {}
 
-    if (step && mnemonic) {
-      setIsGenerating(false)
-      setStep(step)
-      setMnemonic(mnemonic)
-      setAddress(Wallet.fromMnemonic(mnemonic).address)
+    setIsGenerating(true)
+    // workaround for Wallet method that freezes screen
+    setTimeout(() => {
+      if (step && mnemonic) {
+        setIsGenerating(false)
+        setStep(step)
+        setMnemonic(mnemonic)
+        setAddress(Wallet.fromMnemonic(mnemonic).address)
 
-      if (username) {
-        setUsername(username)
-      }
-    } else {
-      setTimeout(() => {
+        if (username) {
+          setUsername(username)
+        }
+      } else {
         start().then()
-      }, 1)
-    }
+      }
+    }, 1)
   }, [])
 
   useEffect(() => {

@@ -11,6 +11,8 @@ export const ACCOUNT_USERNAME_KEY = 'account_username'
 export const ACCOUNT_IS_LOGGED_KEY = 'account_is_logged'
 
 export async function setLogged(username: string, mnemonic: string): Promise<void> {
+  console.log('saving username', username)
+  console.log('saving mnemonic', mnemonic)
   return AsyncStorage.multiSet([
     [ACCOUNT_USERNAME_KEY, username],
     [ACCOUNT_MNEMONIC_KEY, mnemonic],

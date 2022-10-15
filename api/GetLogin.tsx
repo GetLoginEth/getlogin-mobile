@@ -13,6 +13,16 @@ export class GetLogin {
   }
 
   /**
+   * Checks that username registered
+   */
+  async isUsernameRegistered(username: string): Promise<boolean> {
+    const usernameHash = utils.keccak256(utils.toUtf8Bytes(username))
+    const response = await this.dataContract.callStatic.Users(usernameHash)
+
+    return response.length >= 3 && response[2]
+  }
+
+  /**
    * Checks is address assigned to username
    *
    * @param address Ethereum wallet address

@@ -24,6 +24,7 @@ import { Instances } from '../Instances'
 import CreateWalletModalScreen from '../screens/create-wallet/CreateWalletModalScreen'
 import { getLogged } from '../services/storage'
 import SettingsScreen from '../screens/SettingsScreen'
+import LoaderModalScreen from '../screens/LoaderModalScreen'
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -41,9 +42,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
   const dispatch = useAppDispatch()
+
   useEffect(() => {
     Instances.init(dispatch).then()
-    // todo loader while get these values to not blink screens
+    // todo show loader while get these values to not blink screens
     getLogged().then(data => {
       if (data.isLogged) {
         dispatch(setIsLogged(true))
@@ -69,6 +71,11 @@ function RootNavigator() {
 
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen
+          name="Loader"
+          component={LoaderModalScreen}
+          options={{ gestureEnabled: false, presentation: 'transparentModal', headerShown: false }}
+        />
         <Stack.Screen name="Modal" component={QrModalScreen} />
         <Stack.Screen name="ReceiveModal" component={ReceiveModalScreen} />
         <Stack.Screen name="SendModal" component={SendModalScreen} />
@@ -151,6 +158,7 @@ function LoginTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="at-outline" color={color} />,
         })}
       />
+
       <BottomTab.Screen
         name="TabTwo"
         component={SignupScreen}

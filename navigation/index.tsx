@@ -51,11 +51,9 @@ function RootNavigator() {
   }, [])
 
   useEffect(() => {
-    console.log('isLogged, initInfo', isLogged, initInfo)
     async function run() {
       const address = initInfo.address as string
       const uiBalance = await getUIBalance(address)
-      console.log('uiBalance', uiBalance)
       dispatch(setBalance({ xdai: uiBalance, xbzz: '0.0000001' }))
     }
 
@@ -64,7 +62,7 @@ function RootNavigator() {
     }
 
     run().then()
-  }, [isLogged, initInfo])
+  }, [isLogged, initInfo?.address])
 
   return (
     <Stack.Navigator>

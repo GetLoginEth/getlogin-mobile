@@ -32,7 +32,6 @@ export class Instances {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     Instances.getGetLogin
     const { username, mnemonic, isLogged } = await getLogged()
-    console.log('username, mnemonic, isLogged', username, mnemonic, isLogged)
 
     if (!(username && mnemonic && isLogged)) {
       dispatch(setIsLogged(false))
@@ -42,7 +41,6 @@ export class Instances {
 
     setTimeout(async () => {
       const address = getAddressFromMnemonic(mnemonic)
-      console.log('address from menmonic', address)
       dispatch(
         setInitInfo({
           mnemonic,

@@ -8,14 +8,14 @@ import { useAppSelector } from '../redux/hooks'
 import { Instances } from '../Instances'
 
 export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
-  // const dispatch = useAppDispatch();
   const balance = useAppSelector(selectBalance)
 
   const prepareBalance = (balance: string) => {
+    const maxLengthAfterZero = 4
     const split = balance.split('.')
 
     if (split.length === 2 && split[1].length > 2) {
-      return `${split[0]}.${split[1].substr(0, 2)}`
+      return `${split[0]}.${split[1].substr(0, maxLengthAfterZero)}`
     } else {
       return balance
     }
@@ -23,9 +23,6 @@ export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'
 
   return (
     <View style={styles.container}>
-      {/*<Text style={styles.title}>Tab One</Text>*/}
-      {/*<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)"/>*/}
-
       <View style={styles.balanceContainer}>
         <ImageBackground
           source={balanceBack}

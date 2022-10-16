@@ -11,8 +11,10 @@ import signupStyles from '../styles/signup'
 import { STEP_CREATE, STEP_DONE, STEP_SIGNUP } from './create-wallet/CreateWalletModalScreen'
 import { Wallet } from 'ethers'
 import { isAddressUsed, isEnoughBalance, isUsernameRegisteredByAddressUsername } from '../api/GetLoginUtils'
-import { isMnemonicLength, USERNAME_MIN_LENGTH } from '../utils/user'
+import { isMnemonicLength, USERNAME_MIN_LENGTH } from '../utils/wallet'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export default function ImportMnemonicModalScreen({ navigation }) {
   const mnemonic = useInputState()
   const username = useInputState()

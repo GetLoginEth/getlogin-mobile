@@ -2,6 +2,8 @@ import { Button, Layout, Text } from '@ui-kitten/components'
 import general from '../../styles/general'
 import React from 'react'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export default function StepDone({ navigation }) {
   return (
     <>

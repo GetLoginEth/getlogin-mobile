@@ -13,7 +13,7 @@ import DAppsScreen from '../screens/DAppsScreen'
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types'
 import LinkingConfiguration from './LinkingConfiguration'
 import SigninScreen from '../screens/SigninScreen'
-import { selectIsLogged, setBalance, setIsLogged } from '../redux/app/appSlice'
+import { selectIsLogged, setBalance } from '../redux/app/appSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import ReceiveModalScreen from '../screens/ReceiveModalScreen'
 import SendModalScreen from '../screens/SendModalScreen'
@@ -22,9 +22,10 @@ import ImportMnemonicModalScreen from '../screens/ImportMnemonicModalScreen'
 import { useEffect } from 'react'
 import { Instances } from '../Instances'
 import CreateWalletModalScreen from '../screens/create-wallet/CreateWalletModalScreen'
-import { getLogged } from '../services/storage'
 import SettingsScreen from '../screens/SettingsScreen'
 import LoaderModalScreen from '../screens/LoaderModalScreen'
+import { selectInitInfo } from '../redux/init/initSlice'
+import { getUIBalance } from '../utils/ui'
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -42,24 +43,28 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
   const dispatch = useAppDispatch()
+  const isLogged = useAppSelector(selectIsLogged)
+  const initInfo = useAppSelector(selectInitInfo)
 
   useEffect(() => {
     Instances.init(dispatch).then()
-    // todo show loader while get these values to not blink screens
-    getLogged().then(data => {
-      if (data.isLogged) {
-        dispatch(setIsLogged(true))
-      }
-    })
   }, [])
 
-  const isLogged = useAppSelector(selectIsLogged)
-  setTimeout(() => {
-    // if (!isLogged) {
-    //   return;
-    // }
-    dispatch(setBalance({ xdai: '1111.4444444', xbzz: '9999.9999999999999999' }))
-  }, 2000)
+  useEffect(() => {
+    console.log('isLogged, initInfo', isLogged, initInfo)
+    async function run() {
+      const address = initInfo.address as string
+      const uiBalance = await getUIBalance(address)
+      console.log('uiBalance', uiBalance)
+      dispatch(setBalance({ xdai: uiBalance, xbzz: '0.0000001' }))
+    }
+
+    if (!(isLogged && initInfo && initInfo.address)) {
+      return
+    }
+
+    run().then()
+  }, [isLogged, initInfo])
 
   return (
     <Stack.Navigator>

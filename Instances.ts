@@ -3,8 +3,10 @@ import { Contract, providers } from 'ethers'
 import dataAbi from './api/glDataAbi.json'
 import logicAbi from './api/glLogicAbi.json'
 import { setInitInfo } from './redux/init/initSlice'
-import { getAccountIsLogged, getAccountMnemonic, getAccountUsername } from './services/storage'
+import { getAccountIsLogged, getAccountUsername, getLogged } from './services/storage'
 import { Dispatch } from 'redux'
+import { getAddressFromMnemonic } from './utils/wallet'
+import { setIsLogged } from './redux/app/appSlice'
 
 export interface ABIAddress {
   networks: { [key: string]: Network }
@@ -29,13 +31,28 @@ export class Instances {
   static async init(dispatch: Dispatch) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     Instances.getGetLogin
-    dispatch(
-      setInitInfo({
-        mnemonic: await getAccountMnemonic(),
-        username: await getAccountUsername(),
-        isLogged: await getAccountIsLogged(),
-      }),
-    )
+    const { username, mnemonic, isLogged } = await getLogged()
+    console.log('username, mnemonic, isLogged', username, mnemonic, isLogged)
+
+    if (!(username && mnemonic && isLogged)) {
+      dispatch(setIsLogged(false))
+
+      return
+    }
+
+    setTimeout(async () => {
+      const address = getAddressFromMnemonic(mnemonic)
+      console.log('address from menmonic', address)
+      dispatch(
+        setInitInfo({
+          mnemonic,
+          address,
+          username: await getAccountUsername(),
+          isLogged: await getAccountIsLogged(),
+        }),
+      )
+      dispatch(setIsLogged(true))
+    }, 10)
   }
 
   static get getGetLogin() {

@@ -2,8 +2,8 @@ import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components'
 import general from '../../styles/general'
 import * as Clipboard from 'expo-clipboard'
 import React, { useState } from 'react'
-import { getUIBalance, isUIBalanceEnough } from '../../api/GetLoginUtils'
-import { LoaderOutline } from '../../utils/ui'
+import { isUIBalanceEnough } from '../../api/GetLoginUtils'
+import { getUIBalance, LoaderOutline } from '../../utils/ui'
 
 export default function StepCreate({
   mnemonic,

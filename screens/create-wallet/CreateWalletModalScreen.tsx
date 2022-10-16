@@ -18,9 +18,10 @@ export const STEP_CREATE = 'step_create'
 export const STEP_SIGNUP = 'step_signup'
 export const STEP_DONE = 'step_done'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export default function CreateWalletModalScreen({ route, navigation }) {
   const dispatch = useAppDispatch()
-
   const [step, setStep] = useState(STEP_CREATE)
   const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')

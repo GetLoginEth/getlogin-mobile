@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, Animated, Easing } from 'react-native'
 import { View } from '../components/Themed'
 import { useAppSelector } from '../redux/hooks'
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import logo from '../assets/images/icon.png'
 import { selectInitInfo } from '../redux/init/initSlice'
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
@@ -9,8 +9,7 @@ import { DismissKeyboard } from '../utils/ui'
 import general from '../styles/general'
 import { useInputState } from '../utils/state'
 import { Instances } from '../Instances'
-import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../utils/user'
-import LoadingModal from './modal/LoadingModal'
+import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../utils/wallet'
 
 export default function SigninScreen() {
   const username = useInputState()
@@ -85,20 +84,10 @@ export default function SigninScreen() {
             style={general.input}
             placeholder="Password"
             {...password}
-            // value={signinInfo.password}
-            // onChangeText={value => {
-            //   dispatch(setSigninInfo({ ...signinInfo, password: value }))
-            // }}
             textContentType="password"
             secureTextEntry={true}
           />
         </Layout>
-
-        {/*<TouchableOpacity onPress={() => {*/}
-        {/*  dispatch(setIsLogged(true))*/}
-        {/*}}>*/}
-        {/*  <Text>Login fake!</Text>*/}
-        {/*</TouchableOpacity>*/}
 
         <Layout style={general.rowContainer} level="1">
           <Button
@@ -136,16 +125,9 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
-  balanceContainer: {
-    // width:'100%',
-    // flex: 1,
-    // flexDirection: 'column',
-  },
+  balanceContainer: {},
   balanceBack: {
-    // flex: 1,
     justifyContent: 'center',
-    // textAlignVertical:'center',
-    // alignItems:'center',
     width: Dimensions.get('window').width * 0.9,
     height: 180,
     padding: 10,

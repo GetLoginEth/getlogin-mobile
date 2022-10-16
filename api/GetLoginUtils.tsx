@@ -1,14 +1,7 @@
 import { Instances } from '../Instances'
 import { ContractReceipt, utils, Wallet } from 'ethers'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { MIN_BALANCE } from '../utils/user'
-
-/**
- * Gets balance suitable for displaying on UI
- */
-export async function getUIBalance(address: string): Promise<string> {
-  return utils.formatEther(await Instances.getGetLogin.dataContract.provider.getBalance(address))
-}
+import { MIN_BALANCE } from '../utils/wallet'
 
 /**
  * Checks is enough balance by UI value of balance
@@ -87,3 +80,5 @@ export async function assertUsernameAvailable(username: string): Promise<void> {
     throw new Error('Username already registered')
   }
 }
+
+

@@ -2,11 +2,13 @@ import { Button, Input, Layout, Text } from '@ui-kitten/components'
 import general from '../../styles/general'
 import React, { useState } from 'react'
 import { useInputState } from '../../utils/state'
-import { assertUsernameAvailable, isUsernameRegistered, signup } from '../../api/GetLoginUtils'
+import { assertUsernameAvailable, signup } from '../../api/GetLoginUtils'
 import signupStyles from '../../styles/signup'
-import { USERNAME_MIN_LENGTH } from '../../utils/user'
+import { USERNAME_MIN_LENGTH } from '../../utils/wallet'
 import { LoaderOutline } from '../../utils/ui'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export default function StepSignup({ mnemonic, onNextStep }) {
   const username = useInputState()
   const [loading, setLoading] = useState(false)

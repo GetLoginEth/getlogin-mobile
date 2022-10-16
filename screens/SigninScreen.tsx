@@ -57,8 +57,7 @@ export default function SigninScreen() {
 
   return (
     <DismissKeyboard>
-      <View style={{ ...general.container, ...{ alignItems: 'center' } }}>
-        {/*<LoadingModal />*/}
+      <View style={[general.container, { alignItems: 'center' }]}>
         <View style={styles.balanceContainer}>
           <Animated.Image
             style={[

@@ -12,7 +12,6 @@ export default StyleSheet.create({
   },
   container: {
     flex: 1,
-    // alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'column',
     padding: '5%',

@@ -1,8 +1,55 @@
 import { Keyboard, TouchableWithoutFeedback } from 'react-native'
 import React from 'react'
-import { Icon } from '@ui-kitten/components'
+import { Button, Icon, Input, Layout } from '@ui-kitten/components'
 import { utils } from 'ethers'
 import { Instances } from '../Instances'
+import general from '../styles/general'
+import * as Clipboard from 'expo-clipboard'
+
+export const CopyOutline = (props: any) => <Icon {...props} name="copy-outline" />
+
+export const AddressCopyInput = ({ address }: { address: string }) => (
+  <Layout style={general.rowContainer} level="1">
+    <Input
+      style={general.input}
+      label="Address"
+      autoCapitalize="none"
+      value={address}
+      editable={false}
+      accessoryRight={
+        <Button
+          appearance="ghost"
+          accessoryLeft={CopyOutline}
+          onPress={() => {
+            Clipboard.setStringAsync(address).then()
+          }}
+        />
+      }
+    />
+  </Layout>
+)
+export const MnemonicCopyInput = ({ mnemonic }: { mnemonic: string }) => (
+  <Layout style={[general.rowContainer]} level="1">
+    <Input
+      style={general.textarea}
+      editable={false}
+      label="Mnemonic phrase"
+      autoCapitalize="none"
+      multiline={true}
+      textStyle={{ minHeight: 64 }}
+      value={mnemonic}
+      accessoryRight={
+        <Button
+          appearance="ghost"
+          accessoryLeft={CopyOutline}
+          onPress={() => {
+            Clipboard.setStringAsync(mnemonic).then()
+          }}
+        />
+      }
+    />
+  </Layout>
+)
 
 /**
  * Hide keyboard by clicking to screen out of inputs

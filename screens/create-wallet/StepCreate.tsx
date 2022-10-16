@@ -1,9 +1,8 @@
-import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components'
+import { Button, Layout, Text } from '@ui-kitten/components'
 import general from '../../styles/general'
-import * as Clipboard from 'expo-clipboard'
 import React, { useState } from 'react'
 import { isUIBalanceEnough } from '../../api/GetLoginUtils'
-import { getUIBalance, LoaderOutline } from '../../utils/ui'
+import { AddressCopyInput, getUIBalance, LoaderOutline, MnemonicCopyInput } from '../../utils/ui'
 
 export default function StepCreate({
   mnemonic,
@@ -16,49 +15,12 @@ export default function StepCreate({
 }) {
   const [loading, setLoading] = useState(false)
   const [currentBalance, setCurrentBalance] = useState('0.0')
-  const CopyOutline = (props: any) => <Icon {...props} name="copy-outline" />
 
   return (
     <>
-      <Layout style={general.rowContainer} level="1">
-        <Input
-          style={general.input}
-          label="Address"
-          autoCapitalize="none"
-          value={address}
-          editable={false}
-          accessoryRight={
-            <Button
-              appearance="ghost"
-              accessoryLeft={CopyOutline}
-              onPress={() => {
-                Clipboard.setStringAsync(address).then()
-              }}
-            />
-          }
-        />
-      </Layout>
+      <AddressCopyInput address={address} />
 
-      <Layout style={[general.rowContainer]} level="1">
-        <Input
-          style={general.textarea}
-          editable={false}
-          label="Mnemonic phrase"
-          autoCapitalize="none"
-          multiline={true}
-          textStyle={{ minHeight: 64 }}
-          value={mnemonic}
-          accessoryRight={
-            <Button
-              appearance="ghost"
-              accessoryLeft={CopyOutline}
-              onPress={() => {
-                Clipboard.setStringAsync(mnemonic).then()
-              }}
-            />
-          }
-        />
-      </Layout>
+      <MnemonicCopyInput mnemonic={mnemonic} />
 
       <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
         <Text>

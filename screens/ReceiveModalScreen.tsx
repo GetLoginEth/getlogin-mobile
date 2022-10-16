@@ -1,14 +1,33 @@
 import { StatusBar } from 'expo-status-bar'
 import { Platform, StyleSheet } from 'react-native'
-import EditScreenInfo from '../components/EditScreenInfo'
-import { Text, View } from '../components/Themed'
+import { View } from '../components/Themed'
+import QRCode from 'react-native-qrcode-svg'
+import logo from '../assets/images/icon.png'
+import { AddressCopyInput } from '../utils/ui'
+import React from 'react'
+import { useAppSelector } from '../redux/hooks'
+import { selectInitInfo } from '../redux/init/initSlice'
+import general from '../styles/general'
+import { Layout, Text } from '@ui-kitten/components'
 
 export default function ReceiveModalScreen() {
+  const initInfo = useAppSelector(selectInitInfo)
+  const address = initInfo.address as string
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Receive</Text>
+    <View style={[general.container, { alignItems: 'center' }]}>
+      <Layout style={{ ...general.rowContainer }} level="1">
+        <Text style={[general.text, general.greenText, { marginBottom: 20 }]} category="h3">
+          Receive
+        </Text>
+      </Layout>
+
+      <View>
+        <QRCode size={300} value={address} logo={logo} logoSize={60} logoBackgroundColor="transparent" />
+      </View>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/ReceiveModalScreen.tsx" />
+
+      <AddressCopyInput address={address} />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
@@ -29,6 +48,6 @@ const styles = StyleSheet.create({
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: '100%',
   },
 })

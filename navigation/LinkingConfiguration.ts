@@ -29,7 +29,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       Modal: 'modal',
       ReceiveModal: 'modal',
       SendModal: 'modal',
-      ImportMnemonicModal: 'modal',
+      'Import Mnemonic': 'modal',
       NotFound: '*',
     },
   },

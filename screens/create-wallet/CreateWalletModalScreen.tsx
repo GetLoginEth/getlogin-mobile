@@ -61,7 +61,7 @@ export default function CreateWalletModalScreen({ route, navigation }) {
     if (username && mnemonic && step === STEP_DONE) {
       setLogged(username, mnemonic).then()
       dispatch(setIsLogged(true))
-      // todo navigate to Wallet tab
+      navigation.navigate('TabOne')
     }
   }, [username, mnemonic, step])
 

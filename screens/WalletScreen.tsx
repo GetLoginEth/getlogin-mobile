@@ -6,20 +6,10 @@ import balanceBack from '../assets/images/wallet-back.png'
 import { selectBalance } from '../redux/app/appSlice'
 import { useAppSelector } from '../redux/hooks'
 import { Instances } from '../Instances'
+import { prepareBalance } from '../utils/ui'
 
 export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   const balance = useAppSelector(selectBalance)
-
-  const prepareBalance = (balance: string) => {
-    const maxLengthAfterZero = 4
-    const split = balance.split('.')
-
-    if (split.length === 2 && split[1].length > 2) {
-      return `${split[0]}.${split[1].substr(0, maxLengthAfterZero)}`
-    } else {
-      return balance
-    }
-  }
 
   return (
     <View style={styles.container}>
@@ -84,7 +74,6 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   balanceContainer: {
-    // width:'100%',
     flex: 1,
     flexDirection: 'column',
   },
@@ -99,12 +88,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   balanceBack: {
-    // flex: 1,
     justifyContent: 'center',
-    // textAlignVertical:'center',
-    // alignItems:'center',
     width: Dimensions.get('window').width * 0.9,
-    height: 180,
+    height: 210,
     padding: 10,
   },
   walletButtonsHolder: {
@@ -133,16 +119,4 @@ const styles = StyleSheet.create({
     width: 150,
     height: 120,
   },
-  // balanceCard:{
-  //     // backgroundColor:'yellow',
-  //     padding: 8,
-  //     marginLeft: 5,
-  //     marginRight: 5,
-  //     borderStyle: 'solid',
-  //     borderWidth: 1,
-  //     borderColor: '#d7d7d7',
-  //     borderRadius: 16,
-  //     width: '90%',
-  //     height: 150,
-  // }
 })

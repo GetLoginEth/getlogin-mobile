@@ -4,13 +4,6 @@ import { Layout, Spinner } from '@ui-kitten/components'
 import general from '../styles/general'
 import * as React from 'react'
 
-export function openLoader(navigation) {
-  navigation.navigate('Loader')
-}
-export function closeLoader(navigation) {
-  navigation.goBack()
-}
-
 export default function LoaderModalScreen() {
   return (
     <View style={styles.modalView}>

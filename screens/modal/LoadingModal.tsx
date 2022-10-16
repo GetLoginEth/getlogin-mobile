@@ -7,7 +7,6 @@ import { selectIsModal } from '../../redux/app/appSlice'
 
 export default function LoadingModal() {
   const isModal = useAppSelector(selectIsModal)
-  console.log('isModal', isModal)
 
   return (
     <Modal animationType="fade" transparent={true} visible={isModal}>
@@ -23,12 +22,6 @@ export default function LoadingModal() {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   minHeight: 192,
-  // },
-  // backdrop: {
-  //   backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  // },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
@@ -50,24 +43,4 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // button: {
-  //   borderRadius: 20,
-  //   padding: 10,
-  //   elevation: 2,
-  // },
-  // buttonOpen: {
-  //   backgroundColor: '#F194FF',
-  // },
-  // buttonClose: {
-  //   backgroundColor: '#2196F3',
-  // },
-  // textStyle: {
-  //   color: 'white',
-  //   fontWeight: 'bold',
-  //   textAlign: 'center',
-  // },
-  // modalText: {
-  //   marginBottom: 15,
-  //   textAlign: 'center',
-  // },
 })

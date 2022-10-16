@@ -25,8 +25,6 @@ export default function ImportMnemonicModalScreen({ navigation }) {
       },
     ])
 
-  console.log('loading', loading)
-
   return (
     <DismissKeyboard>
       <View style={general.container}>
@@ -84,17 +82,12 @@ export default function ImportMnemonicModalScreen({ navigation }) {
                   const wallet = Wallet.fromMnemonic(value)
 
                   if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
-                    console.log('step 1')
                     finalStep = () => navigateToStep(STEP_DONE)
                   } else if (await isAddressUsed(wallet.address)) {
-                    console.log('step 11')
                     createAlert()
                   } else if (await isEnoughBalance(wallet.address)) {
-                    console.log('step 2')
                     finalStep = () => navigateToStep(STEP_SIGNUP)
                   } else {
-                    console.log('step 3')
-
                     finalStep = () => navigateToStep(STEP_CREATE)
                   }
                   // eslint-disable-next-line no-empty

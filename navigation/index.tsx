@@ -81,7 +81,7 @@ function RootNavigator() {
         />
         <Stack.Screen name="Modal" component={QrModalScreen} />
         <Stack.Screen name="ReceiveModal" component={ReceiveModalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SendModal" component={SendModalScreen} />
+        <Stack.Screen name="SendModal" component={SendModalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Import Mnemonic" component={ImportMnemonicModalScreen} />
         <Stack.Screen name="Create Wallet" component={CreateWalletModalScreen} />
       </Stack.Group>

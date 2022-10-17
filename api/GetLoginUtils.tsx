@@ -1,7 +1,12 @@
 import { Instances } from '../Instances'
-import { ContractReceipt, utils, Wallet } from 'ethers'
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { Contract, ContractReceipt, utils, Wallet } from 'ethers'
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 import { MIN_BALANCE } from '../utils/wallet'
+
+export enum CryptoType {
+  DAI,
+  BZZ,
+}
 
 /**
  * Checks is enough balance by UI value of balance
@@ -81,4 +86,68 @@ export async function assertUsernameAvailable(username: string): Promise<void> {
   }
 }
 
+export async function getAddressByUsername(username: string): Promise<string> {
+  return Instances.getGetLogin.getAddressByUsername(username)
+}
 
+export function isEthereumAddress(address: string): boolean {
+  return address.length === 42 && address.startsWith('0x')
+}
+
+export async function sendToken(address: string, tokenAddress: string, amount: string): Promise<TransactionResponse> {
+  if (!Instances.currentWallet) {
+    throw new Error('ERC20: Empty current wallet')
+  }
+  const abi = [
+    // Read-Only Functions
+    'function balanceOf(address owner) view returns (uint256)',
+    'function decimals() view returns (uint8)',
+    'function symbol() view returns (string)',
+    // Authenticated Functions
+    'function transfer(address to, uint amount) returns (bool)',
+    // Events
+    'event Transfer(address indexed from, address indexed to, uint amount)',
+  ]
+
+  const erc20 = new Contract(address, abi, Instances.currentWallet.provider)
+
+  return erc20.transfer(address, utils.parseUnits(amount))
+}
+
+/**
+ * Sends crypto to defined address or username
+ */
+export async function sendCrypto(
+  addressOrUsername: string,
+  amount: string,
+  cryptoType: CryptoType,
+): Promise<TransactionResponse> {
+  if (!Instances.currentWallet) {
+    throw new Error('Send crypto: Empty current wallet')
+  }
+
+  if (!Instances.data || !Instances.data.bzz.address) {
+    throw new Error('Send crypto: Bzz address is not defined')
+  }
+
+  let address = ''
+
+  if (isEthereumAddress(addressOrUsername)) {
+    address = addressOrUsername
+  } else {
+    address = await getAddressByUsername(addressOrUsername)
+  }
+
+  const txDai = {
+    to: address,
+    value: utils.parseEther(amount),
+  }
+
+  if (cryptoType === CryptoType.DAI) {
+    return Instances.currentWallet.sendTransaction(txDai)
+  } else if (cryptoType === CryptoType.BZZ) {
+    return sendToken(address, Instances.data.bzz.address, amount)
+  } else {
+    throw new Error('Incorrect crypto type')
+  }
+}

@@ -23,6 +23,22 @@ export class GetLogin {
   }
 
   /**
+   * Gets address by username
+   */
+  async getAddressByUsername(username: string): Promise<string> {
+    const usernameHash = utils.keccak256(utils.toUtf8Bytes(username))
+    const response = await this.dataContract.callStatic.Users(usernameHash)
+
+    const result = response.length >= 3 && response[1]
+
+    if (!result || result === '0x0000000000000000000000000000000000000000') {
+      throw new Error('Address is not assigned')
+    }
+
+    return result
+  }
+
+  /**
    * Checks is address assigned to username
    *
    * @param address Ethereum wallet address

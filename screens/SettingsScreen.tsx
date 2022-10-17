@@ -27,7 +27,7 @@ export default function SettingsScreen() {
 
   return (
     <View style={general.container}>
-      <Layout style={{ ...general.rowContainer }} level="1">
+      <Layout style={[general.rowContainer, { marginBottom: 20 }]} level="1">
         <Text style={{ ...general.text, ...general.greenText }} category="h3">
           Settings
         </Text>

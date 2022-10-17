@@ -1,12 +1,12 @@
 import { GetLogin } from './api/GetLogin'
-import { Contract, providers } from 'ethers'
+import { Contract, providers, Wallet } from 'ethers'
 import dataAbi from './api/glDataAbi.json'
 import logicAbi from './api/glLogicAbi.json'
 import { setInitInfo } from './redux/init/initSlice'
 import { getAccountIsLogged, getAccountUsername, getLogged } from './services/storage'
 import { Dispatch } from 'redux'
-import { getAddressFromMnemonic } from './utils/wallet'
 import { setIsLogged } from './redux/app/appSlice'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 export interface ABIAddress {
   networks: { [key: string]: Network }
@@ -27,6 +27,7 @@ export interface NetworkDescription {
 export class Instances {
   static getLogin: GetLogin | undefined
   static data: NetworkDescription | undefined
+  static currentWallet: Wallet | undefined
 
   static async init(dispatch: Dispatch) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -40,11 +41,18 @@ export class Instances {
     }
 
     setTimeout(async () => {
-      const address = getAddressFromMnemonic(mnemonic)
+      const rpcUrl = Instances.data?.jsonRpcProvider
+
+      if (!rpcUrl) {
+        throw new Error('Incorrect rpc url')
+      }
+      const wallet = Wallet.fromMnemonic(mnemonic).connect(new JsonRpcProvider(rpcUrl))
+      Instances.currentWallet = wallet
+
       dispatch(
         setInitInfo({
           mnemonic,
-          address,
+          address: wallet.address,
           username: await getAccountUsername(),
           isLogged: await getAccountIsLogged(),
         }),

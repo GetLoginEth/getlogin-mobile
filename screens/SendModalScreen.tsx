@@ -4,18 +4,28 @@ import { View } from '../components/Themed'
 import { useAppSelector } from '../redux/hooks'
 import general from '../styles/general'
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { selectBalance } from '../redux/app/appSlice'
 import { LoaderOutline, prepareBalance } from '../utils/ui'
 import { useInputState } from '../utils/state'
 import { USERNAME_MIN_LENGTH } from '../utils/wallet'
 import { CryptoType, sendCrypto } from '../api/GetLoginUtils'
 
-export default function ReceiveModalScreen() {
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export default function SendModalScreen({ route }) {
   const [isSending, setIsSending] = useState(false)
   const balance = useAppSelector(selectBalance)
-  const username = useInputState()
+  const usernameOrAddress = useInputState()
   const amount = useInputState()
+
+  useEffect(() => {
+    const { address } = route.params || {}
+
+    if (address) {
+      usernameOrAddress.onChangeText(address)
+    }
+  }, [])
 
   return (
     <View style={[general.container, { alignItems: 'center' }]}>
@@ -38,7 +48,7 @@ export default function ReceiveModalScreen() {
       </Layout>
 
       <Layout style={general.rowContainer} level="1">
-        <Input style={general.input} placeholder="Username or address" autoCapitalize="none" {...username} />
+        <Input style={general.input} placeholder="Username or address" autoCapitalize="none" {...usernameOrAddress} />
       </Layout>
 
       <Layout style={general.rowContainer} level="1">
@@ -49,12 +59,13 @@ export default function ReceiveModalScreen() {
         <Button
           style={[general.button]}
           status="success"
-          disabled={isSending || username.value.trim().length < USERNAME_MIN_LENGTH || !amount.value.trim()}
+          // todo is send amount less than current balance
+          disabled={isSending || usernameOrAddress.value.trim().length < USERNAME_MIN_LENGTH || !amount.value.trim()}
           accessoryLeft={<LoaderOutline loading={isSending} />}
           onPress={async () => {
             setIsSending(true)
             // todo add crypto type switcher to ui
-            await (await sendCrypto(username.value.trim(), amount.value.trim(), CryptoType.DAI)).wait()
+            await (await sendCrypto(usernameOrAddress.value.trim(), amount.value.trim(), CryptoType.DAI)).wait()
             // todo update balance on ui
             setIsSending(false)
           }}

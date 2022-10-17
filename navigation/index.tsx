@@ -79,7 +79,7 @@ function RootNavigator() {
           component={LoaderModalScreen}
           options={{ gestureEnabled: false, presentation: 'transparentModal', headerShown: false }}
         />
-        <Stack.Screen name="Modal" component={QrModalScreen} />
+        <Stack.Screen name="Modal" component={QrModalScreen} options={{ headerTitle: 'Scan QR code' }} />
         <Stack.Screen name="ReceiveModal" component={ReceiveModalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SendModal" component={SendModalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Import Mnemonic" component={ImportMnemonicModalScreen} />

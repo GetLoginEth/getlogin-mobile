@@ -30,8 +30,8 @@ export default function ImportMnemonicModalScreen({ navigation }) {
   return (
     <DismissKeyboard>
       <View style={general.container}>
-        <Layout style={{ ...general.rowContainer, ...signupStyles.createWallet }} level="1">
-          <Text style={{ ...general.text, ...general.greenText }} category="h3">
+        <Layout style={[general.rowContainer, signupStyles.createWallet]} level="1">
+          <Text style={[general.text, general.greenText]} category="h3">
             Import mnemonic
           </Text>
         </Layout>

@@ -41,17 +41,10 @@ export default StyleSheet.create({
     backgroundColor: '#3366FF',
   },
   viewCorner: {
-    // flex: 1,
     borderColor: '#04c0a5',
     borderWidth: 2,
     borderRadius: 20,
     padding: 20,
     paddingBottom: 8,
-    // width: 250,
-    // height: 250,
-    // width: '100%',
-    // height: '10%',
-    // paddingLeft: 8,
-    // paddingRight: 8,
   },
 })

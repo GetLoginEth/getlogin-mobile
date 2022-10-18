@@ -1,5 +1,5 @@
 import { Dimensions, ImageBackground, Pressable, StyleSheet } from 'react-native'
-import { Text, View } from '../components/Themed'
+import { View } from '../components/Themed'
 import { RootTabScreenProps } from '../types'
 import { Ionicons } from '@expo/vector-icons'
 import balanceBack from '../assets/images/wallet-back.png'
@@ -7,12 +7,24 @@ import { selectBalance } from '../redux/app/appSlice'
 import { useAppSelector } from '../redux/hooks'
 import { Instances } from '../Instances'
 import { prepareBalance } from '../utils/ui'
+import general from '../styles/general'
+import { Layout, Text } from '@ui-kitten/components'
+import React from 'react'
+import signupStyles from '../styles/signup'
+import { selectInitInfo } from '../redux/init/initSlice'
 
 export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   const balance = useAppSelector(selectBalance)
+  const initInfo = useAppSelector(selectInitInfo)
 
   return (
-    <View style={styles.container}>
+    <View style={general.container}>
+      <Layout style={[general.rowContainer, signupStyles.createWallet]} level="1">
+        <Text style={[general.text, general.greenText]} category="h3">
+          {initInfo.username || ''}
+        </Text>
+      </Layout>
+
       <View style={styles.balanceContainer}>
         <ImageBackground
           source={balanceBack}
@@ -21,10 +33,10 @@ export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'
           style={styles.balanceBack}
         >
           <Text style={styles.balanceText}>
-            {prepareBalance(balance.xdai)} {Instances.data?.currency}
+            {prepareBalance(balance.xdai)} {Instances.data?.currency || ''}
           </Text>
           <Text style={styles.balanceTextSmall}>
-            {prepareBalance(balance.xbzz)} {Instances.data?.bzz.name}
+            {prepareBalance(balance.xbzz)} {Instances.data?.bzz.name || ''}
           </Text>
         </ImageBackground>
       </View>
@@ -59,11 +71,6 @@ export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',

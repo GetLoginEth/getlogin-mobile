@@ -19,8 +19,10 @@ export default function ImportMnemonicModalScreen({ navigation }) {
   const mnemonic = useInputState()
   const username = useInputState()
   const [loading, setLoading] = useState(false)
+  const isImportDisabled =
+    !isMnemonicLength(mnemonic.value) || username.value.trim().length < USERNAME_MIN_LENGTH || loading
 
-  const createAlert = () =>
+  const mnemonicIsNotAssignedAlert = () =>
     Alert.alert('Information', 'The mnemonic is not assigned to the username. Fix your info and try again.', [
       {
         text: 'OK',
@@ -37,13 +39,14 @@ export default function ImportMnemonicModalScreen({ navigation }) {
         </Layout>
 
         <Layout style={general.rowContainer} level="1">
-          <Input style={general.input} autoCapitalize="none" placeholder="Username" {...username} />
+          <Input style={general.input} autoCapitalize="none" placeholder="Username" {...username} disabled={loading} />
         </Layout>
 
         <Layout style={[general.rowContainer]} level="1">
           <Input
             style={general.textarea}
             placeholder="Mnemonic phrase"
+            disabled={loading}
             autoCapitalize="none"
             multiline={true}
             textStyle={{ minHeight: 64 }}
@@ -55,9 +58,7 @@ export default function ImportMnemonicModalScreen({ navigation }) {
           <Button
             style={[general.button]}
             status="success"
-            disabled={
-              !isMnemonicLength(mnemonic.value) || username.value.trim().length < USERNAME_MIN_LENGTH || loading
-            }
+            disabled={isImportDisabled}
             accessoryLeft={<LoaderOutline loading={loading} />}
             onPress={async () => {
               const value = mnemonic.value
@@ -86,7 +87,7 @@ export default function ImportMnemonicModalScreen({ navigation }) {
                   if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
                     finalStep = () => navigateToStep(STEP_DONE)
                   } else if (await isAddressUsed(wallet.address)) {
-                    createAlert()
+                    mnemonicIsNotAssignedAlert()
                   } else if (await isEnoughBalance(wallet.address)) {
                     finalStep = () => navigateToStep(STEP_SIGNUP)
                   } else {

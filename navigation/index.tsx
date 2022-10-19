@@ -19,7 +19,7 @@ import ReceiveModalScreen from '../screens/ReceiveModalScreen'
 import SendModalScreen from '../screens/SendModalScreen'
 import SignupScreen from '../screens/SignupScreen'
 import ImportMnemonicModalScreen from '../screens/ImportMnemonicModalScreen'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Instances } from '../Instances'
 import CreateWalletModalScreen from '../screens/create-wallet/CreateWalletModalScreen'
 import SettingsScreen from '../screens/SettingsScreen'
@@ -42,35 +42,45 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
+  const [isLoginChecked, setIsLoginChecked] = useState(false)
   const dispatch = useAppDispatch()
   const isLogged = useAppSelector(selectIsLogged)
   const initInfo = useAppSelector(selectInitInfo)
 
   useEffect(() => {
-    Instances.init(dispatch).then()
+    setTimeout(async () => {
+      await Instances.init(dispatch)
+      setIsLoginChecked(true)
+    }, 10)
   }, [])
 
   useEffect(() => {
-    async function run() {
-      const address = initInfo.address as string
+    async function run(address: string) {
       const uiBalance = await getUIBalance(address)
-      dispatch(setBalance({ xdai: uiBalance, xbzz: '0.0000001' }))
+      // todo get actual bzz balance
+      dispatch(setBalance({ xdai: uiBalance, xbzz: '0.01' }))
     }
 
     if (!(isLogged && initInfo && initInfo.address)) {
       return
     }
 
-    run().then()
+    run(initInfo.address as string).then()
   }, [isLogged, initInfo?.address])
+
+  let rootComponent
+
+  if (!isLoginChecked) {
+    rootComponent = LoaderModalScreen
+  } else if (isLoginChecked && isLogged) {
+    rootComponent = LoggedTabNavigator
+  } else {
+    rootComponent = LoginTabNavigator
+  }
 
   return (
     <Stack.Navigator>
-      {isLogged ? (
-        <Stack.Screen name="Root" component={LoggedTabNavigator} options={{ headerShown: false }} />
-      ) : (
-        <Stack.Screen name="Root" component={LoginTabNavigator} options={{ headerShown: false }} />
-      )}
+      <Stack.Screen name="Root" component={rootComponent} options={{ headerShown: false }} />
 
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>

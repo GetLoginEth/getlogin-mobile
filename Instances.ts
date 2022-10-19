@@ -40,25 +40,28 @@ export class Instances {
       return
     }
 
-    setTimeout(async () => {
-      const rpcUrl = Instances.data?.jsonRpcProvider
+    return new Promise((resolve) => {
+      setTimeout(async () => {
+        const rpcUrl = Instances.data?.jsonRpcProvider
 
-      if (!rpcUrl) {
-        throw new Error('Incorrect rpc url')
-      }
-      const wallet = Wallet.fromMnemonic(mnemonic).connect(new JsonRpcProvider(rpcUrl))
-      Instances.currentWallet = wallet
+        if (!rpcUrl) {
+          throw new Error('Incorrect rpc url')
+        }
+        const wallet = Wallet.fromMnemonic(mnemonic).connect(new JsonRpcProvider(rpcUrl))
+        Instances.currentWallet = wallet
 
-      dispatch(
-        setInitInfo({
-          mnemonic,
-          address: wallet.address,
-          username: await getAccountUsername(),
-          isLogged: await getAccountIsLogged(),
-        }),
-      )
-      dispatch(setIsLogged(true))
-    }, 10)
+        dispatch(
+          setInitInfo({
+            mnemonic,
+            address: wallet.address,
+            username: await getAccountUsername(),
+            isLogged: await getAccountIsLogged(),
+          }),
+        )
+        dispatch(setIsLogged(true))
+        resolve(true)
+      }, 10)
+    })
   }
 
   static get getGetLogin() {

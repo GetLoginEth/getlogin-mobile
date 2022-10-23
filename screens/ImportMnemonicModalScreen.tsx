@@ -61,14 +61,14 @@ export default function ImportMnemonicModalScreen({ navigation }) {
             disabled={isImportDisabled}
             accessoryLeft={<LoaderOutline loading={loading} />}
             onPress={async () => {
-              const value = mnemonic.value
+              const mnemonicValue = mnemonic.value
 
               const navigateToStep = (step: string) => {
                 navigation.goBack()
-                navigation.navigate('Create Wallet', { step, mnemonic: value, username: username.value })
+                navigation.navigate('Create Wallet', { step, mnemonic: mnemonicValue, username: username.value })
               }
 
-              if (!isMnemonicLength(value)) {
+              if (!isMnemonicLength(mnemonicValue)) {
                 // todo show alert or display in specific place
                 console.error('Incorrect mnemonic length')
 
@@ -82,7 +82,7 @@ export default function ImportMnemonicModalScreen({ navigation }) {
               setTimeout(async () => {
                 let finalStep
                 try {
-                  const wallet = Wallet.fromMnemonic(value)
+                  const wallet = Wallet.fromMnemonic(mnemonicValue)
 
                   if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
                     finalStep = () => navigateToStep(STEP_DONE)

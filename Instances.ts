@@ -2,10 +2,9 @@ import { GetLogin } from './api/GetLogin'
 import { Contract, providers, Wallet } from 'ethers'
 import dataAbi from './api/glDataAbi.json'
 import logicAbi from './api/glLogicAbi.json'
-import { setInitInfo } from './redux/init/initSlice'
+import { setInitInfo, setIsLogged } from './redux/init/initSlice'
 import { getAccountIsLogged, getAccountUsername, getLogged } from './services/storage'
 import { Dispatch } from 'redux'
-import { setIsLogged } from './redux/app/appSlice'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 export interface ABIAddress {

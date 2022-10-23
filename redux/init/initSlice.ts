@@ -33,20 +33,13 @@ export const initSlice = createSlice({
       state.username = action.payload.username
       state.isLogged = action.payload.isLogged
     },
-  },
-  extraReducers: builder => {
-    // builder
-    //     .addCase(incrementAsync.pending, (state) => {
-    //         state.status = 'loading';
-    //     })
-    //     .addCase(incrementAsync.fulfilled, (state, action) => {
-    //         state.status = 'idle';
-    //         // state.value += action.payload;
-    //     });
+    setIsLogged: (state, action: PayloadAction<boolean>) => {
+      state.isLogged = action.payload
+    },
   },
 })
 
-export const { setInitInfo } = initSlice.actions
+export const { setInitInfo, setIsLogged } = initSlice.actions
 
 export const selectInitInfo = (state: RootState) => ({
   mnemonic: state.init.mnemonic,
@@ -54,5 +47,7 @@ export const selectInitInfo = (state: RootState) => ({
   username: state.init.username,
   isLogged: state.init.isLogged,
 })
+
+export const selectIsLogged = (state: RootState) => state.init.isLogged
 
 export default initSlice.reducer

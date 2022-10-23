@@ -21,23 +21,10 @@ export const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    // setIsLogged: (state, action: PayloadAction<boolean>) => {
-    //     state.isLogged = action.payload;
-    // },
     setSigninInfo: (state, action: PayloadAction<{ username: string; password: string }>) => {
       state.username = action.payload.username
       state.password = action.payload.password
     },
-  },
-  extraReducers: builder => {
-    // builder
-    //     .addCase(incrementAsync.pending, (state) => {
-    //         state.status = 'loading';
-    //     })
-    //     .addCase(incrementAsync.fulfilled, (state, action) => {
-    //         state.status = 'idle';
-    //         // state.value += action.payload;
-    //     });
   },
 })
 

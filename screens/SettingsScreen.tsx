@@ -5,7 +5,7 @@ import { Button, Layout, Text } from '@ui-kitten/components'
 import { Alert } from 'react-native'
 import { resetLogged } from '../services/storage'
 import { useAppDispatch } from '../redux/hooks'
-import { setIsLogged } from '../redux/app/appSlice'
+import { setInitInfo } from '../redux/init/initSlice'
 
 export default function SettingsScreen() {
   const dispatch = useAppDispatch()
@@ -20,7 +20,7 @@ export default function SettingsScreen() {
         text: 'OK',
         onPress: async () => {
           await resetLogged()
-          dispatch(setIsLogged(false))
+          dispatch(setInitInfo({ mnemonic: '', username: '', address: '', isLogged: false }))
         },
       },
     ])

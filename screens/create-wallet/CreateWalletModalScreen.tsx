@@ -11,8 +11,8 @@ import StepCreate from './StepCreate'
 import StepSignup from './StepSignup'
 import StepDone from './StepDone'
 import { Wallet } from 'ethers'
-import { setIsLogged } from '../../redux/app/appSlice'
 import { useAppDispatch } from '../../redux/hooks'
+import { setInitInfo, setIsLogged } from '../../redux/init/initSlice'
 
 export const STEP_CREATE = 'step_create'
 export const STEP_SIGNUP = 'step_signup'
@@ -61,6 +61,7 @@ export default function CreateWalletModalScreen({ route, navigation }) {
     if (username && mnemonic && step === STEP_DONE) {
       setLogged(username, mnemonic).then()
       dispatch(setIsLogged(true))
+      dispatch(setInitInfo({ isLogged: true, username, mnemonic, address }))
       navigation.navigate('TabOne')
     }
   }, [username, mnemonic, step])

@@ -13,7 +13,7 @@ import DAppsScreen from '../screens/DAppsScreen'
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types'
 import LinkingConfiguration from './LinkingConfiguration'
 import SigninScreen from '../screens/SigninScreen'
-import { selectIsLogged, setBalance } from '../redux/app/appSlice'
+import { setBalance } from '../redux/app/appSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import ReceiveModalScreen from '../screens/ReceiveModalScreen'
 import SendModalScreen from '../screens/SendModalScreen'
@@ -24,7 +24,7 @@ import { Instances } from '../Instances'
 import CreateWalletModalScreen from '../screens/create-wallet/CreateWalletModalScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 import LoaderModalScreen from '../screens/LoaderModalScreen'
-import { selectInitInfo } from '../redux/init/initSlice'
+import { selectInitInfo, selectIsLogged } from '../redux/init/initSlice'
 import { getUIBalance } from '../utils/ui'
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -47,7 +47,9 @@ function RootNavigator() {
   const isLogged = useAppSelector(selectIsLogged)
   const initInfo = useAppSelector(selectInitInfo)
 
+  // todo update balance after account import/login
   useEffect(() => {
+    // todo remove setTimeout?
     setTimeout(async () => {
       await Instances.init(dispatch)
       setIsLoginChecked(true)

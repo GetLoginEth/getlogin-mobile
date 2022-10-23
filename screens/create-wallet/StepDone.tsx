@@ -8,13 +8,13 @@ export default function StepDone({ navigation }) {
   return (
     <>
       <Layout style={[general.rowContainer]} level="1">
-        <Text style={{ ...general.text, ...general.greenText }} category="h3">
+        <Text style={[general.text, general.greenText]} category="h3">
           Done!
         </Text>
       </Layout>
 
       <Layout style={[general.rowContainer]} level="1">
-        <Text style={{ ...general.text }}>
+        <Text style={[general.text]}>
           The wallet has been successfully saved on your device. Now you can close this message and start using all the
           features.
         </Text>

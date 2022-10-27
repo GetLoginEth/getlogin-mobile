@@ -40,6 +40,9 @@ export const appSlice = createSlice({
         state.balanceXdai = action.payload.balanceXdai
         state.balanceXbzz = action.payload.balanceXbzz
       })
+      .addCase(updateBalance.rejected, state => {
+        state.status = 'failed'
+      })
   },
 })
 

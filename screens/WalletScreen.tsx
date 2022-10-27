@@ -1,10 +1,18 @@
-import { Dimensions, ImageBackground, Pressable, StyleSheet } from 'react-native'
+import {
+  Dimensions,
+  ImageBackground,
+  Pressable,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+} from 'react-native'
 import { View } from '../components/Themed'
 import { RootTabScreenProps } from '../types'
 import { Ionicons } from '@expo/vector-icons'
 import balanceBack from '../assets/images/wallet-back.png'
-import { selectBalance } from '../redux/app/appSlice'
-import { useAppSelector } from '../redux/hooks'
+import { selectBalance, updateBalance } from '../redux/app/appSlice'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { Instances } from '../Instances'
 import { prepareBalance } from '../utils/ui'
 import general from '../styles/general'
@@ -14,59 +22,76 @@ import signupStyles from '../styles/signup'
 import { selectInitInfo } from '../redux/init/initSlice'
 
 export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+  const [refreshing, setRefreshing] = React.useState(false)
   const balance = useAppSelector(selectBalance)
   const initInfo = useAppSelector(selectInitInfo)
+  const dispatch = useAppDispatch()
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true)
+    await dispatch(updateBalance(initInfo.address!))
+    setRefreshing(false)
+  }, [])
 
   return (
-    <View style={general.container}>
-      <Layout style={[general.rowContainer, signupStyles.createWallet]} level="1">
-        <Text style={[general.text, general.greenText]} category="h3">
-          {initInfo.username || ''}
-        </Text>
-      </Layout>
+    <SafeAreaView>
+      <ScrollView
+        contentContainerStyle={{
+          height: '100%',
+        }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <View style={general.container}>
+          <Layout style={[general.rowContainer, signupStyles.createWallet]} level="1">
+            <Text style={[general.text, general.greenText]} category="h3">
+              {initInfo.username || ''}
+            </Text>
+          </Layout>
 
-      <View style={styles.balanceContainer}>
-        <ImageBackground
-          source={balanceBack}
-          imageStyle={{ borderRadius: 16 }}
-          resizeMode="cover"
-          style={styles.balanceBack}
-        >
-          <Text style={styles.balanceText}>
-            {prepareBalance(balance.xdai)} {Instances.data?.currency || ''}
-          </Text>
-          <Text style={styles.balanceTextSmall}>
-            {prepareBalance(balance.xbzz)} {Instances.data?.bzz.name || ''}
-          </Text>
-        </ImageBackground>
-      </View>
-
-      <View style={styles.walletButtonsHolder}>
-        <Pressable
-          onPress={() => navigation.navigate('ReceiveModal')}
-          style={({ pressed }) => ({
-            opacity: pressed ? 0.5 : 1,
-          })}
-        >
-          <View style={styles.walletButton}>
-            <Ionicons style={styles.walletIcon} name="arrow-down-circle-outline" size={60} color="black" />
-            <Text style={styles.walletButtonTitle}>Receive</Text>
+          <View style={styles.balanceContainer}>
+            <ImageBackground
+              source={balanceBack}
+              imageStyle={{ borderRadius: 16 }}
+              resizeMode="cover"
+              style={styles.balanceBack}
+            >
+              <Text style={styles.balanceText}>
+                {prepareBalance(balance.xdai)} {Instances.data?.currency || ''}
+              </Text>
+              <Text style={styles.balanceTextSmall}>
+                {prepareBalance(balance.xbzz)} {Instances.data?.bzz.name || ''}
+              </Text>
+            </ImageBackground>
           </View>
-        </Pressable>
 
-        <Pressable
-          onPress={() => navigation.navigate('SendModal')}
-          style={({ pressed }) => ({
-            opacity: pressed ? 0.5 : 1,
-          })}
-        >
-          <View style={styles.walletButton}>
-            <Ionicons style={styles.walletIcon} name="arrow-up-circle-outline" size={60} color="black" />
-            <Text style={styles.walletButtonTitle}>Send</Text>
+          <View style={styles.walletButtonsHolder}>
+            <Pressable
+              onPress={() => navigation.navigate('ReceiveModal')}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}
+            >
+              <View style={styles.walletButton}>
+                <Ionicons style={styles.walletIcon} name="arrow-down-circle-outline" size={60} color="black" />
+                <Text style={styles.walletButtonTitle}>Receive</Text>
+              </View>
+            </Pressable>
+
+            <Pressable
+              onPress={() => navigation.navigate('SendModal')}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}
+            >
+              <View style={styles.walletButton}>
+                <Ionicons style={styles.walletIcon} name="arrow-up-circle-outline" size={60} color="black" />
+                <Text style={styles.walletButtonTitle}>Send</Text>
+              </View>
+            </Pressable>
           </View>
-        </Pressable>
-      </View>
-    </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 

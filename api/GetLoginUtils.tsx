@@ -1,7 +1,8 @@
 import { Instances } from '../Instances'
-import { Contract, ContractReceipt, utils, Wallet } from 'ethers'
+import { BigNumber, Contract, ContractReceipt, utils, Wallet } from 'ethers'
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 import { MIN_BALANCE } from '../utils/wallet'
+import { Provider } from '@ethersproject/abstract-provider'
 
 export enum CryptoType {
   DAI,
@@ -94,10 +95,13 @@ export function isEthereumAddress(address: string): boolean {
   return address.length === 42 && address.startsWith('0x')
 }
 
-export async function sendToken(address: string, tokenAddress: string, amount: string): Promise<TransactionResponse> {
-  if (!Instances.currentWallet) {
-    throw new Error('ERC20: Empty current wallet')
-  }
+/**
+ * Get ERC-20 contract instance based on address and provider
+ *
+ * @param address address of the contract
+ * @param provider provider for interacting with the contract
+ */
+export function getErc20Contract(address: string, provider: Provider): Contract {
   const abi = [
     // Read-Only Functions
     'function balanceOf(address owner) view returns (uint256)',
@@ -109,7 +113,38 @@ export async function sendToken(address: string, tokenAddress: string, amount: s
     'event Transfer(address indexed from, address indexed to, uint amount)',
   ]
 
-  const erc20 = new Contract(address, abi, Instances.currentWallet.provider)
+  return new Contract(address, abi, provider)
+}
+
+/**
+ * Gets balance of token on user address
+ *
+ * @param tokenAddress address of token smart contract
+ * @param userAddress user address who hold the tokens
+ */
+export async function getTokenBalance(tokenAddress: string, userAddress: string): Promise<BigNumber> {
+  if (!Instances.currentWallet) {
+    throw new Error('ERC20: Empty current wallet')
+  }
+
+  const erc20 = getErc20Contract(tokenAddress, Instances.currentWallet.provider)
+
+  return erc20.balanceOf(userAddress)
+}
+
+/**
+ * Sends ERC-20 tokens to address
+ *
+ * @param address address of the receiver
+ * @param tokenAddress address of the token smart contract
+ * @param amount amount tokens to transfer
+ */
+export async function sendToken(address: string, tokenAddress: string, amount: string): Promise<TransactionResponse> {
+  if (!Instances.currentWallet) {
+    throw new Error('ERC20: Empty current wallet')
+  }
+
+  const erc20 = getErc20Contract(address, Instances.currentWallet.provider)
 
   return erc20.transfer(address, utils.parseUnits(amount))
 }

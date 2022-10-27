@@ -13,7 +13,7 @@ import DAppsScreen from '../screens/DAppsScreen'
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types'
 import LinkingConfiguration from './LinkingConfiguration'
 import SigninScreen from '../screens/SigninScreen'
-import { setBalance } from '../redux/app/appSlice'
+import { updateBalance } from '../redux/app/appSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import ReceiveModalScreen from '../screens/ReceiveModalScreen'
 import SendModalScreen from '../screens/SendModalScreen'
@@ -25,7 +25,6 @@ import CreateWalletModalScreen from '../screens/create-wallet/CreateWalletModalS
 import SettingsScreen from '../screens/SettingsScreen'
 import LoaderModalScreen from '../screens/LoaderModalScreen'
 import { selectInitInfo, selectIsLogged } from '../redux/init/initSlice'
-import { getUIBalance } from '../utils/ui'
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -57,17 +56,11 @@ function RootNavigator() {
   }, [])
 
   useEffect(() => {
-    async function run(address: string) {
-      const uiBalance = await getUIBalance(address)
-      // todo get actual bzz balance
-      dispatch(setBalance({ xdai: uiBalance, xbzz: '0.01' }))
-    }
-
     if (!(isLogged && initInfo && initInfo.address)) {
       return
     }
 
-    run(initInfo.address as string).then()
+    dispatch(updateBalance(initInfo.address as string))
   }, [isLogged, initInfo?.address])
 
   let rootComponent

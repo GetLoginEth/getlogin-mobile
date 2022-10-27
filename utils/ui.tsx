@@ -5,6 +5,7 @@ import { utils } from 'ethers'
 import { Instances } from '../Instances'
 import general from '../styles/general'
 import * as Clipboard from 'expo-clipboard'
+import { getTokenBalance } from '../api/GetLoginUtils'
 
 export const CopyOutline = (props: any) => <Icon {...props} name="copy-outline" />
 
@@ -70,6 +71,19 @@ export const LoaderOutline = (props: any) => {
  */
 export async function getUIBalance(address: string): Promise<string> {
   return utils.formatEther(await Instances.getGetLogin.dataContract.provider.getBalance(address))
+}
+
+/**
+ * Gets balance suitable for displaying on UI
+ */
+export async function getUIBalanceBzz(address: string): Promise<string> {
+  const contractAddress = Instances.data?.bzz.address
+
+  if (!contractAddress) {
+    throw new Error('Bzz address: is no defined')
+  }
+
+  return utils.formatEther(await getTokenBalance(contractAddress, address))
 }
 
 /**

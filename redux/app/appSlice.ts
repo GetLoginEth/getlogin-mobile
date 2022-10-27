@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
+import { getUIBalance, getUIBalanceBzz } from '../../utils/ui'
 
 export interface AppState {
   status: 'idle' | 'loading' | 'failed'
@@ -13,6 +14,13 @@ const initialState: AppState = {
   balanceXbzz: '0',
 }
 
+export const updateBalance = createAsyncThunk('app/updateBalance', async (address: string) => {
+  const balanceXdai = await getUIBalance(address)
+  const balanceXbzz = await getUIBalanceBzz(address)
+
+  return { balanceXdai, balanceXbzz }
+})
+
 export const appSlice = createSlice({
   name: 'app',
   initialState,
@@ -21,6 +29,17 @@ export const appSlice = createSlice({
       state.balanceXdai = action.payload.xdai
       state.balanceXbzz = action.payload.xbzz
     },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(updateBalance.pending, state => {
+        state.status = 'loading'
+      })
+      .addCase(updateBalance.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.balanceXdai = action.payload.balanceXdai
+        state.balanceXbzz = action.payload.balanceXbzz
+      })
   },
 })
 

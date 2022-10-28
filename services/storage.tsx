@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { AppSession } from '../api/GetLogin'
 
 export interface LoggedUser {
   username: string | null
@@ -9,6 +10,24 @@ export interface LoggedUser {
 export const ACCOUNT_MNEMONIC_KEY = 'account_mnemonic'
 export const ACCOUNT_USERNAME_KEY = 'account_username'
 export const ACCOUNT_IS_LOGGED_KEY = 'account_is_logged'
+export const APP_SESSIONS_LIST = 'app_sessions_list'
+
+/**
+ *
+ * @param session
+ */
+export async function addAppSession(session: AppSession): Promise<void> {
+  const listString = await AsyncStorage.getItem(APP_SESSIONS_LIST)
+  let items = []
+
+  if (listString) {
+    items = JSON.parse(listString)
+  }
+
+  items.push(session)
+
+  return AsyncStorage.setItem(APP_SESSIONS_LIST, JSON.stringify(items))
+}
 
 export async function setLogged(username: string, mnemonic: string): Promise<void> {
   return AsyncStorage.multiSet([

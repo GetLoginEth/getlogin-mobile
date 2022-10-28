@@ -2,6 +2,32 @@ import { Contract, Signer, utils, Wallet } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
 import { ContractTransaction } from '@ethersproject/contracts/src.ts'
 
+/**
+ * Information about session tied to the app
+ */
+export interface AppSession {
+  address: string
+  applicationId: number
+  isActive: boolean
+}
+
+/**
+ * Information about 3rd party application
+ */
+export interface ApplicationInformation {
+  applicationId: number
+  usernameHash: string
+  title: string
+  description: string
+  allowedUrls: string[]
+  allowedContracts: string[]
+  isActive: boolean
+}
+
+export interface StoreSessionOptions {
+  isStoreSession: boolean
+}
+
 export class GetLogin {
   constructor(public dataContract: Contract, public logicContract: Contract) {}
 
@@ -105,30 +131,6 @@ export class GetLogin {
     return await Wallet.fromEncryptedJson(jsonWallet, password)
   }
 
-  // todo all methods should be covered with tests with blockchain or at least mocks (correct and incorrect)
-
-  /**
-   * Creates user from an invite
-   *
-   * Storing account is less secure, but faster. Without storing all funds will be transferred from an invite to the accountWallet
-   *
-   * @param username username to register
-   * @param invite invite (eth private key)
-   * @param accountWallet wallet created for managing an account
-   * @param isStoreWallet store account wallet in smart contract or not
-   */
-  async createUserFromInvite(
-    username: string,
-    invite: string,
-    accountWallet: Wallet,
-    isStoreWallet = false,
-  ): Promise<void> {
-    // INVITE
-    // todo if user created with an invite and wallet SHOULD be stored in data use - function createUserFromInvite(bytes32 _usernameHash, address payable _walletAddress, string memory _ciphertext, string memory _iv, string memory _salt, string memory _mac, bool _allowReset)
-    // todo if user created with an invite and wallet SHOULD NOT be stored in data use - Transfer all finance to the new wallet then function createUser(bytes32 _usernameHash)
-    // todo would be great to have `createUserFromInvite` in smart contract without storing the wallet data
-  }
-
   /**
    * Creates user with signer
    *
@@ -142,38 +144,91 @@ export class GetLogin {
     return contract.functions.createUser(usernameHash)
   }
 
-  // async getGlobalSettings(signerOrProvider: Signer | Provider | string): Promise<void> {
-  //   const contract = this.logicContract.connect(signerOrProvider)
-  //   const result = await contract.callStatic.getGlobalSettings('settingsInvitesOnly')
-  //   console.log('result', result)
-  // }
+  /**
+   * Creates application
+   *
+   * @param title title of the application
+   * @param description description of the application
+   * @param allowedUrls array or allowed urls for authentication (for web version)
+   * @param allowedContracts allowed contracts for interaction
+   * @param signerOrProvider signer for interaction with the logic contract
+   */
+  async createApplication(
+    title: string,
+    description: string,
+    allowedUrls: string[],
+    allowedContracts: string[],
+    signerOrProvider: Signer | Provider | string,
+  ): Promise<ContractTransaction> {
+    const contract = this.logicContract.connect(signerOrProvider)
+
+    return contract.createApplication(title, description, allowedUrls, allowedContracts)
+  }
 
   /**
    * Creates app session (Ethereum wallet) with some funds
    *
    * @param applicationId target application id
    * @param sessionAddress address of session Ethereum wallet
-   * @param options options with storing configuration
+   * @param signerOrProvider signer of the account
+   * @param options storing options
    */
-  async createAppSession(applicationId: number, sessionAddress: string, options?: any): Promise<void> {
-    // todo options = {isStoreSession: boolean, ...(session params)}
-    // todo if (isStoreSession) - call "function createAppSession(uint64 _appId, address payable _sessionAddress, string memory _iv, string memory _ephemPublicKey, string memory _ciphertext, string memory _mac) public payable"
-    // todo if (!isStoreSession) - call "function createSimpleAppSession(uint64 _appId, address payable _sessionAddress) public payable"
-    // todo if this session wallet encrypted async - then could be used isStoreSession = true as default because main wallet will be safe locally
+  async createAppSession(
+    applicationId: number,
+    sessionAddress: string,
+    signerOrProvider: Signer | Provider | string,
+    options?: StoreSessionOptions,
+  ): Promise<ContractTransaction> {
+    options = { isStoreSession: false, ...options }
+    const contract = this.logicContract.connect(signerOrProvider)
+
+    if (options.isStoreSession) {
+      // todo if (isStoreSession) - call "function createAppSession(uint64 _appId, address payable _sessionAddress, string memory _iv, string memory _ephemPublicKey, string memory _ciphertext, string memory _mac) public payable"
+      throw new Error('Storing of sessions is not supported')
+    } else {
+      return contract.createSimpleAppSession(applicationId, sessionAddress)
+    }
   }
 
   /**
-   * Get application session (Ethereum wallet)
+   * Gets the list of active sessions
    *
-   * @param username username of the session owner
-   * @param applicationId application id
-   * @param accountPrivateKey private key of the main account to decrypt the session
+   * @param username username of the owner of sessions
+   * @param signerOrProvider provider for logic contract reading
    */
-  async getAppSession(username: string, applicationId: number, accountPrivateKey: string): Promise<Wallet> {}
+  async getActiveAppSessions(username: string, signerOrProvider: Signer | Provider | string): Promise<AppSession[]> {
+    const usernameHash = utils.keccak256(utils.toUtf8Bytes(username))
+    const contract = this.logicContract.connect(signerOrProvider)
+    const response = await contract.callStatic.getActiveAppSessions(usernameHash)
 
-  // todo write this class to make compatible with frontend. similar methods/params types
-  // todo check if possible to interact with smart contract without uploading wallet to sm-data
-  // todo signup with local wallet. optionally upload it to smart contract
-  // todo signup with local wallet + invite. optionally upload it to smart contract
-  // async signupWithInvite(username: string, password: string, invite: string): Promise<void> {}
+    return response.map((item: any) => ({
+      address: item[1],
+      applicationId: Number(item[2].toString()),
+      isActive: item[3],
+    }))
+  }
+
+  /**
+   * Gets information about specific application
+   *
+   * @param applicationId application id
+   * @param signerOrProvider provider for logic contract reading
+   */
+  async getApplication(
+    applicationId: number,
+    signerOrProvider: Signer | Provider | string,
+  ): Promise<ApplicationInformation> {
+    const contract = this.logicContract.connect(signerOrProvider)
+    const response = await contract.callStatic.getApplication(applicationId)
+
+    return {
+      applicationId: Number(response[0].toString()),
+      usernameHash: response[1],
+      title: response[2],
+      description: response[3],
+      allowedUrls: response[4],
+      allowedContracts: response[5],
+      isActive: response[6],
+    }
+  }
 }

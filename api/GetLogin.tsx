@@ -191,6 +191,18 @@ export class GetLogin {
   }
 
   /**
+   * Closes application session for current user
+   */
+  async closeAppSession(
+    applicationId: number,
+    signerOrProvider: Signer | Provider | string,
+  ): Promise<ContractTransaction> {
+    const contract = this.logicContract.connect(signerOrProvider)
+
+    return contract.closeAppSession(applicationId)
+  }
+
+  /**
    * Gets the list of active sessions
    *
    * @param username username of the owner of sessions

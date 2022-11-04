@@ -7,11 +7,12 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-declare global {
-  namespace ReactNavigation {
-    type RootParamList = RootStackParamList
-  }
-}
+// declare global {
+//   // eslint-disable-next-line @typescript-eslint/no-namespace
+//   namespace ReactNavigation {
+//     type RootParamList = RootStackParamList
+//   }
+// }
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined
@@ -22,6 +23,7 @@ export type RootStackParamList = {
   Loader: undefined
   'Import Mnemonic': undefined
   'Create Wallet': undefined
+  AppSessionModal: undefined
 }
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

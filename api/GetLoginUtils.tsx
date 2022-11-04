@@ -3,6 +3,7 @@ import { BigNumber, Contract, ContractReceipt, utils, Wallet } from 'ethers'
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 import { MIN_BALANCE } from '../utils/wallet'
 import { Provider } from '@ethersproject/abstract-provider'
+import { ApplicationInformation, AppSession } from './GetLogin'
 
 export enum CryptoType {
   DAI,
@@ -185,4 +186,38 @@ export async function sendCrypto(
   } else {
     throw new Error('Incorrect crypto type')
   }
+}
+
+/**
+ * Gets application information
+ */
+export async function getApplication(applicationId: number): Promise<ApplicationInformation> {
+  // todo optimize this validation for every call. move somewhere or reorganize the code
+  if (!Instances.currentWallet) {
+    throw new Error('getApplication: empty web provider')
+  }
+
+  return Instances.getGetLogin.getApplication(applicationId, Instances.currentWallet!)
+}
+
+/**
+ * Gets information about active sessions
+ */
+export async function getActiveAppSessions(username: string): Promise<AppSession[]> {
+  if (!Instances.currentWallet) {
+    throw new Error('getActiveAppSessions: empty web provider')
+  }
+
+  return Instances.getGetLogin.getActiveAppSessions(username, Instances.currentWallet!)
+}
+
+/**
+ * Closes application session for current user
+ */
+export async function closeAppSession(applicationId: number): Promise<void> {
+  if (!Instances.currentWallet) {
+    throw new Error('closeAppSession: empty signer')
+  }
+
+  await Instances.getGetLogin.closeAppSession(applicationId, Instances.currentWallet)
 }

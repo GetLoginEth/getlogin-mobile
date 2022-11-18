@@ -9,7 +9,8 @@ import * as Linking from 'expo-linking'
 import { RootStackParamList } from '../types'
 
 const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: [Linking.makeUrl('/')],
+  // prefixes: [Linking.createURL('/'), 'https://getlogin.org'],
+  prefixes: [Linking.createURL('/')],
   config: {
     screens: {
       Root: {
@@ -26,10 +27,8 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
         },
       },
-      Modal: 'modal',
-      ReceiveModal: 'modal',
-      SendModal: 'modal',
-      'Import Mnemonic': 'modal',
+      // screens that could be opened by 3rd-party app
+      DAppAuthorizationModal: 'dapp-authorize',
       NotFound: '*',
     },
   },

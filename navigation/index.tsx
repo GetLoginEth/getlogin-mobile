@@ -26,6 +26,7 @@ import SettingsScreen from '../screens/SettingsScreen'
 import LoaderModalScreen from '../screens/LoaderModalScreen'
 import { selectInitInfo, selectIsLogged } from '../redux/init/initSlice'
 import AppSessionModalScreen from '../screens/AppSessionModalScreen'
+import DAppAuthorizationModalScreen from '../screens/DAppAuthorizationModalScreen'
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -91,6 +92,11 @@ function RootNavigator() {
         <Stack.Screen name="Import Mnemonic" component={ImportMnemonicModalScreen} />
         <Stack.Screen name="Create Wallet" component={CreateWalletModalScreen} />
         <Stack.Screen name="AppSessionModal" component={AppSessionModalScreen} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="DAppAuthorizationModal"
+          component={DAppAuthorizationModalScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   )

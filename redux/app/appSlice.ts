@@ -34,8 +34,6 @@ export const updateBalance = createAsyncThunk('app/updateBalance', async (addres
  * Get information about specific dApp
  */
 export const getDappInfo = createAsyncThunk('app/getDappInfo', async (id: number) => {
-  console.log('get getDappInfo', id)
-
   return getApplication(id)
 })
 

@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "getlogin",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -20,14 +20,28 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.shadurin.getloginmobile"
+      "bundleIdentifier": "com.shadurin.getloginmobile",
+      "associatedDomains": ["applinks:getlogin.org"]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.shadurin.getloginmobile"
+      "package": "com.shadurin.getloginmobile",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*.getlogin.org",
+              "pathPrefix": "/mobile"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

@@ -24,6 +24,7 @@ export type RootStackParamList = {
   'Import Mnemonic': undefined
   'Create Wallet': undefined
   AppSessionModal: undefined
+  DAppAuthorizationModal: undefined
 }
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

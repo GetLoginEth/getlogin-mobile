@@ -8,7 +8,6 @@ import {
   StyleSheet,
 } from 'react-native'
 import { View } from '../components/Themed'
-import { RootTabScreenProps } from '../types'
 import { Ionicons } from '@expo/vector-icons'
 import balanceBack from '../assets/images/wallet-back.png'
 import { selectBalance, updateBalance } from '../redux/app/appSlice'
@@ -21,7 +20,9 @@ import React from 'react'
 import signupStyles from '../styles/signup'
 import { selectInitInfo } from '../redux/init/initSlice'
 
-export default function WalletScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export default function WalletScreen({ navigation }) {
   const [refreshing, setRefreshing] = React.useState(false)
   const balance = useAppSelector(selectBalance)
   const initInfo = useAppSelector(selectInitInfo)

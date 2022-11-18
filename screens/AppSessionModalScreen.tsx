@@ -41,11 +41,7 @@ export default function AppSessionModalScreen({ route }: { route: any }) {
       </Layout>
 
       <Layout style={general.rowContainer} level="1">
-        <Button
-          style={[general.button]}
-          status="warning"
-          onPress={createAlert}
-        >
+        <Button style={[general.button]} status="warning" onPress={createAlert}>
           {evaProps => <Text {...evaProps}>Revoke</Text>}
         </Button>
       </Layout>

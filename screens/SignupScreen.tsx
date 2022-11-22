@@ -25,7 +25,7 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
             style={[general.button]}
             status="success"
             accessoryLeft={EditOutline}
-            onPress={() => navigation.navigate('Create Wallet')}
+            onPress={() => navigation.navigate('CreateWallet')}
           >
             {evaProps => <Text {...evaProps}>Create a wallet</Text>}
           </Button>
@@ -37,7 +37,7 @@ export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'
             appearance="ghost"
             status={'basic'}
             style={general.button}
-            onPress={() => navigation.navigate('Import Mnemonic')}
+            onPress={() => navigation.navigate('ImportMnemonic')}
           >
             {evaProps => <Text {...evaProps}>I already have a wallet</Text>}
           </Button>

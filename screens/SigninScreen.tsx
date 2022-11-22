@@ -10,7 +10,7 @@ import { Instances } from '../Instances'
 import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../utils/wallet'
 import { RootTabScreenProps } from '../types'
 
-export default function SigninScreen({ navigation }: RootTabScreenProps<'TabTwo'>) {
+export default function SigninScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const username = useInputState()
@@ -121,7 +121,7 @@ export default function SigninScreen({ navigation }: RootTabScreenProps<'TabTwo'
             appearance="ghost"
             status={'basic'}
             style={general.button}
-            onPress={() => navigation.navigate('Import Mnemonic')}
+            onPress={() => navigation.navigate('ImportMnemonic')}
           >
             {evaProps => <Text {...evaProps}>I already have a wallet</Text>}
           </Button>

@@ -89,8 +89,16 @@ function RootNavigator() {
         <Stack.Screen name="Modal" component={QrModalScreen} options={{ headerTitle: 'Scan QR code' }} />
         <Stack.Screen name="ReceiveModal" component={ReceiveModalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SendModal" component={SendModalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Import Mnemonic" component={ImportMnemonicModalScreen} />
-        <Stack.Screen name="Create Wallet" component={CreateWalletModalScreen} />
+        <Stack.Screen
+          name="ImportMnemonic"
+          component={ImportMnemonicModalScreen}
+          options={{ headerTitle: 'Import a mnemonic' }}
+        />
+        <Stack.Screen
+          name="CreateWallet"
+          component={CreateWalletModalScreen}
+          options={{ headerTitle: 'Create a wallet' }}
+        />
         <Stack.Screen name="AppSessionModal" component={AppSessionModalScreen} options={{ headerShown: false }} />
         <Stack.Screen
           name="DAppAuthorizationModal"

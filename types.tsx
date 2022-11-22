@@ -21,8 +21,8 @@ export type RootStackParamList = {
   ReceiveModal: undefined
   NotFound: undefined
   Loader: undefined
-  'Import Mnemonic': undefined
-  'Create Wallet': undefined
+  ImportMnemonic: undefined
+  CreateWallet: undefined
   AppSessionModal: undefined
   DAppAuthorizationModal: undefined
 }

@@ -23,7 +23,15 @@ export default function ReceiveModalScreen() {
       </Layout>
 
       <View>
-        <QRCode size={300} value={address} logo={logo} logoSize={60} logoBackgroundColor="transparent" />
+        <QRCode
+          size={300}
+          value={address}
+          logo={logo}
+          logoSize={60}
+          logoBackgroundColor="#ffffff"
+          logoBorderRadius={10}
+          logoMargin={7}
+        />
       </View>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 

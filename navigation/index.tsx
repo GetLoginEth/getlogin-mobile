@@ -48,13 +48,13 @@ function RootNavigator() {
   const isLogged = useAppSelector(selectIsLogged)
   const initInfo = useAppSelector(selectInitInfo)
 
-  // todo update balance after account import/login
   useEffect(() => {
-    // todo remove setTimeout?
-    setTimeout(async () => {
+    async function run() {
       await Instances.init(dispatch)
       setIsLoginChecked(true)
-    }, 10)
+    }
+
+    run().then()
   }, [])
 
   useEffect(() => {

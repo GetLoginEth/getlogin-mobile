@@ -31,7 +31,7 @@ export default function SendModalScreen({ route }) {
     <View style={[general.container, { alignItems: 'center' }]}>
       <Layout style={{ ...general.rowContainer }} level="1">
         <Text style={[general.text, general.greenText, { marginBottom: 20 }]} category="h3">
-          Send crypto
+          Send
         </Text>
       </Layout>
 

@@ -1,12 +1,10 @@
 import { View } from '../components/Themed'
 import { RootTabScreenProps } from '../types'
-import { Button, Icon, Layout, Text } from '@ui-kitten/components'
+import { Button, Layout, Text } from '@ui-kitten/components'
 import general from '../styles/general'
 import signup from '../styles/signup'
 import React from 'react'
-
-const EditOutline = (props: any) => <Icon {...props} name="edit-outline" />
-const CreditCardOutline = (props: any) => <Icon {...props} name="credit-card-outline" />
+import { CreditCardOutline, EditOutline } from '../utils/ui'
 
 export default function SignupScreen({ navigation }: RootTabScreenProps<'TabTwo'>) {
   return (

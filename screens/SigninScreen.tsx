@@ -1,20 +1,20 @@
 import { Dimensions, StyleSheet, Animated, Easing } from 'react-native'
 import { View } from '../components/Themed'
-import { useAppSelector } from '../redux/hooks'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import logo from '../assets/images/icon.png'
-import { selectInitInfo } from '../redux/init/initSlice'
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
-import { DismissKeyboard } from '../utils/ui'
+import { DismissKeyboard, LoaderOutline } from '../utils/ui'
 import general from '../styles/general'
 import { useInputState } from '../utils/state'
 import { Instances } from '../Instances'
 import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../utils/wallet'
+import { RootTabScreenProps } from '../types'
 
-export default function SigninScreen() {
+export default function SigninScreen({ navigation }: RootTabScreenProps<'TabTwo'>) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const username = useInputState()
   const password = useInputState()
-  const initState = useAppSelector(selectInitInfo)
   const rotateAnimation = useRef(new Animated.Value(0)).current
   const animationTime = 1000
   const animationChangeValue = 3
@@ -54,6 +54,8 @@ export default function SigninScreen() {
     inputRange: [0, 360],
     outputRange: ['0deg', '360deg'],
   })
+  const isLoginDisabled =
+    loading || username.value.trim().length < USERNAME_MIN_LENGTH || password.value.length < PASSWORD_MIN_LENGTH
 
   return (
     <DismissKeyboard>
@@ -70,8 +72,10 @@ export default function SigninScreen() {
           />
         </View>
 
-        {initState.mnemonic && initState.username && !initState.isLogged && (
-          <Text>Fast login with user: {initState.username}</Text>
+        {error && (
+          <Layout style={[general.rowContainer]} level="1">
+            <Text style={{ color: 'red' }}>{error}</Text>
+          </Layout>
         )}
 
         <Layout style={general.rowContainer} level="1">
@@ -92,21 +96,34 @@ export default function SigninScreen() {
           <Button
             style={[general.button]}
             status="success"
-            disabled={username.value.trim().length < USERNAME_MIN_LENGTH || password.value.length < PASSWORD_MIN_LENGTH}
+            accessoryLeft={<LoaderOutline loading={loading} />}
+            disabled={isLoginDisabled}
             onPress={async () => {
-              // const gl = Instances.getGetLogin
-              // // todo set status start login
+              setLoading(true)
               try {
+                setError('')
                 await Instances.getGetLogin.login(username.value.trim(), password.value)
-                console.log('login ok')
-                // todo set ok login
               } catch (e) {
-                console.log('login error', e)
-                // todo set status error login
+                const error = e as Error
+                setError(error.message)
+              } finally {
+                setLoading(false)
               }
             }}
           >
             {evaProps => <Text {...evaProps}>Sign in</Text>}
+          </Button>
+        </Layout>
+
+        <Layout style={general.rowContainer} level="1">
+          <Button
+            // accessoryLeft={CreditCardOutline}
+            appearance="ghost"
+            status={'basic'}
+            style={general.button}
+            onPress={() => navigation.navigate('Import Mnemonic')}
+          >
+            {evaProps => <Text {...evaProps}>I already have a wallet</Text>}
           </Button>
         </Layout>
       </View>

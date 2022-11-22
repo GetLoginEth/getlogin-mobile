@@ -91,6 +91,10 @@ export class GetLogin {
    */
   async login(username: string, password: string): Promise<Wallet> {
     const usernameHash = utils.keccak256(utils.toUtf8Bytes(username))
+
+    if (!(await this.isUsernameRegistered(username))) {
+      throw new Error('User not registered')
+    }
     const filters = await this.dataContract.filters['EventStoreWallet(bytes32,address,string,string,string,string)'](
       usernameHash,
     )
@@ -98,10 +102,9 @@ export class GetLogin {
     const args = result[0]?.args
 
     if (!args) {
-      throw new Error('Received empty data from contract')
+      throw new Error("User registered with your local wallet. You can't login with password")
     }
 
-    // todo simplify it with my own parser or find a solution
     const walletAddress = args[1] as string
     const ciphertext = args[2] as string
     const iv = args[3] as string

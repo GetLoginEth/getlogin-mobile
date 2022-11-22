@@ -11,7 +11,7 @@ export default function SettingsScreen() {
   const dispatch = useAppDispatch()
 
   const createAlert = () =>
-    Alert.alert('Confirmation', 'Reset your local account?', [
+    Alert.alert('Confirmation', 'Clear your local account?', [
       {
         text: 'Cancel',
         style: 'cancel',
@@ -35,7 +35,7 @@ export default function SettingsScreen() {
 
       <Layout style={general.rowContainer} level="1">
         <Button style={[general.button]} status={'danger'} onPress={createAlert}>
-          {evaProps => <Text {...evaProps}>Reset account</Text>}
+          {evaProps => <Text {...evaProps}>Clear local account</Text>}
         </Button>
       </Layout>
     </View>

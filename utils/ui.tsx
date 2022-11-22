@@ -66,6 +66,9 @@ export const LoaderOutline = (props: any) => {
   return (props.loading && <Icon {...props} name="loader-outline" />) || <></>
 }
 
+export const EditOutline = (props: any) => <Icon {...props} name="edit-outline" />
+export const CreditCardOutline = (props: any) => <Icon {...props} name="credit-card-outline" />
+
 /**
  * Gets balance suitable for displaying on UI
  */

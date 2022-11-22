@@ -92,7 +92,7 @@ function RootNavigator() {
         <Stack.Screen
           name="ImportMnemonic"
           component={ImportMnemonicModalScreen}
-          options={{ headerTitle: 'Import a mnemonic' }}
+          options={{ headerTitle: 'Import mnemonic' }}
         />
         <Stack.Screen
           name="CreateWallet"

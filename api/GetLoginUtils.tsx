@@ -10,6 +10,12 @@ export enum CryptoType {
   BZZ,
 }
 
+export function validateCurrentWallet(): void {
+  if (!Instances.currentWallet) {
+    throw new Error('GL Utils: empty current wallet')
+  }
+}
+
 /**
  * Checks is enough balance by UI value of balance
  */
@@ -124,11 +130,8 @@ export function getErc20Contract(address: string, provider: Provider): Contract 
  * @param userAddress user address who hold the tokens
  */
 export async function getTokenBalance(tokenAddress: string, userAddress: string): Promise<BigNumber> {
-  if (!Instances.currentWallet) {
-    throw new Error('ERC20: Empty current wallet')
-  }
-
-  const erc20 = getErc20Contract(tokenAddress, Instances.currentWallet.provider)
+  validateCurrentWallet()
+  const erc20 = getErc20Contract(tokenAddress, Instances.currentWallet!.provider)
 
   return erc20.balanceOf(userAddress)
 }
@@ -141,11 +144,8 @@ export async function getTokenBalance(tokenAddress: string, userAddress: string)
  * @param amount amount tokens to transfer
  */
 export async function sendToken(address: string, tokenAddress: string, amount: string): Promise<TransactionResponse> {
-  if (!Instances.currentWallet) {
-    throw new Error('ERC20: Empty current wallet')
-  }
-
-  const erc20 = getErc20Contract(address, Instances.currentWallet.provider)
+  validateCurrentWallet()
+  const erc20 = getErc20Contract(address, Instances.currentWallet!.provider)
 
   return erc20.transfer(address, utils.parseUnits(amount))
 }
@@ -158,9 +158,7 @@ export async function sendCrypto(
   amount: string,
   cryptoType: CryptoType,
 ): Promise<TransactionResponse> {
-  if (!Instances.currentWallet) {
-    throw new Error('Send crypto: Empty current wallet')
-  }
+  validateCurrentWallet()
 
   if (!Instances.data || !Instances.data.bzz.address) {
     throw new Error('Send crypto: Bzz address is not defined')
@@ -180,7 +178,7 @@ export async function sendCrypto(
   }
 
   if (cryptoType === CryptoType.DAI) {
-    return Instances.currentWallet.sendTransaction(txDai)
+    return Instances.currentWallet!.sendTransaction(txDai)
   } else if (cryptoType === CryptoType.BZZ) {
     return sendToken(address, Instances.data.bzz.address, amount)
   } else {
@@ -192,10 +190,7 @@ export async function sendCrypto(
  * Gets application information
  */
 export async function getApplication(applicationId: number): Promise<ApplicationInformation> {
-  // todo optimize this validation for every call. move somewhere or reorganize the code
-  if (!Instances.currentWallet) {
-    throw new Error('getApplication: empty web provider')
-  }
+  validateCurrentWallet()
 
   return Instances.getGetLogin.getApplication(applicationId, Instances.currentWallet!)
 }
@@ -204,9 +199,7 @@ export async function getApplication(applicationId: number): Promise<Application
  * Gets information about active sessions
  */
 export async function getActiveAppSessions(username: string): Promise<AppSession[]> {
-  if (!Instances.currentWallet) {
-    throw new Error('getActiveAppSessions: empty web provider')
-  }
+  validateCurrentWallet()
 
   return Instances.getGetLogin.getActiveAppSessions(username, Instances.currentWallet!)
 }
@@ -215,9 +208,7 @@ export async function getActiveAppSessions(username: string): Promise<AppSession
  * Closes application session for current user
  */
 export async function closeAppSession(applicationId: number): Promise<void> {
-  if (!Instances.currentWallet) {
-    throw new Error('closeAppSession: empty signer')
-  }
+  validateCurrentWallet()
 
-  await Instances.getGetLogin.closeAppSession(applicationId, Instances.currentWallet)
+  await Instances.getGetLogin.closeAppSession(applicationId, Instances.currentWallet!)
 }

@@ -16,7 +16,7 @@ import { Instances } from '../Instances'
 import { prepareBalance } from '../utils/ui'
 import general from '../styles/general'
 import { Layout, Text } from '@ui-kitten/components'
-import React from 'react'
+import React, { useEffect } from 'react'
 import signupStyles from '../styles/signup'
 import { selectInitInfo } from '../redux/init/initSlice'
 
@@ -32,6 +32,10 @@ export default function WalletScreen({ navigation }) {
     setRefreshing(true)
     await dispatch(updateBalance(initInfo.address!))
     setRefreshing(false)
+  }, [])
+
+  useEffect(() => {
+    onRefresh().then()
   }, [])
 
   return (

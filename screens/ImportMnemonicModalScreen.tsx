@@ -12,6 +12,8 @@ import { STEP_CREATE, STEP_DONE, STEP_SIGNUP } from './create-wallet/CreateWalle
 import { Wallet } from 'ethers'
 import { isAddressUsed, isEnoughBalance, isUsernameRegisteredByAddressUsername } from '../api/GetLoginUtils'
 import { isMnemonicLength, USERNAME_MIN_LENGTH } from '../utils/wallet'
+import { JsonRpcProvider } from '@ethersproject/providers'
+import { Instances } from '../Instances'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -65,7 +67,7 @@ export default function ImportMnemonicModalScreen({ navigation }) {
 
               const navigateToStep = (step: string) => {
                 navigation.goBack()
-                navigation.navigate('Create Wallet', { step, mnemonic: mnemonicValue, username: username.value })
+                navigation.navigate('CreateWallet', { step, mnemonic: mnemonicValue, username: username.value })
               }
 
               if (!isMnemonicLength(mnemonicValue)) {
@@ -75,14 +77,15 @@ export default function ImportMnemonicModalScreen({ navigation }) {
                 return
               }
 
-              // openLoader(navigation)
               setLoading(true)
 
               // workaround to prevent freezing from `Wallet.fromMnemonic`
               setTimeout(async () => {
                 let finalStep
                 try {
-                  const wallet = Wallet.fromMnemonic(mnemonicValue)
+                  const rpcUrl = Instances.data?.jsonRpcProvider
+                  const wallet = Wallet.fromMnemonic(mnemonicValue).connect(new JsonRpcProvider(rpcUrl))
+                  Instances.currentWallet = wallet
 
                   if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
                     finalStep = () => navigateToStep(STEP_DONE)

@@ -23,6 +23,10 @@ export default function AppSessionModalScreen({ route }: { route: any }) {
         text: 'OK',
         onPress: async () => {
           // todo show progress, update the list of sessions. deny to modify any sessions for tx time
+          // todo close after revoke
+          // todo update the list of apps after revoke
+          // todo remove from local storage
+          // todo move funds to main wallet before close (could be implemented in future)
           closeAppSession(applicationId).then()
         },
       },

@@ -3,6 +3,23 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { ContractTransaction } from '@ethersproject/contracts/src.ts'
 
 /**
+ * Information for storing application session in smart contract
+ */
+export interface EncryptedApplicationSession {
+  iv: string
+  ephemPublicKey: string
+  ciphertext: string
+  mac: string
+}
+
+/**
+ * Information for amount of ETH to transfer during application session creation
+ */
+export interface ApplicationSessionPayment {
+  amountEth: string
+}
+
+/**
  * Information about session tied to the app
  */
 export interface AppSession {
@@ -24,8 +41,13 @@ export interface ApplicationInformation {
   isActive: boolean
 }
 
+/**
+ * Options for storing application sessions
+ */
 export interface StoreSessionOptions {
-  isStoreSession: boolean
+  isStoreApplicationSession: boolean
+  encryptedApplicationSession?: EncryptedApplicationSession
+  applicationSessionPayment?: ApplicationSessionPayment
 }
 
 export class GetLogin {
@@ -182,14 +204,22 @@ export class GetLogin {
     signerOrProvider: Signer | Provider | string,
     options?: StoreSessionOptions,
   ): Promise<ContractTransaction> {
-    options = { isStoreSession: false, ...options }
     const contract = this.logicContract.connect(signerOrProvider)
 
-    if (options.isStoreSession) {
-      // todo if (isStoreSession) - call "function createAppSession(uint64 _appId, address payable _sessionAddress, string memory _iv, string memory _ephemPublicKey, string memory _ciphertext, string memory _mac) public payable"
-      throw new Error('Storing of sessions is not supported')
+    const isStoreApplicationSession = options?.isStoreApplicationSession
+    const encryptedApplicationSession = options?.encryptedApplicationSession
+    const applicationSessionPayment = options?.applicationSessionPayment
+
+    const params = {
+      value: applicationSessionPayment ? utils.parseUnits(applicationSessionPayment.amountEth) : 0,
+    }
+
+    if (isStoreApplicationSession && encryptedApplicationSession) {
+      const { iv, ephemPublicKey, ciphertext, mac } = encryptedApplicationSession
+
+      return contract.createAppSession(applicationId, sessionAddress, iv, ephemPublicKey, ciphertext, mac, params)
     } else {
-      return contract.createSimpleAppSession(applicationId, sessionAddress)
+      return contract.createSimpleAppSession(applicationId, sessionAddress, params)
     }
   }
 
@@ -203,6 +233,34 @@ export class GetLogin {
     const contract = this.logicContract.connect(signerOrProvider)
 
     return contract.closeAppSession(applicationId)
+  }
+
+  async getAppSession(
+    applicationId: number,
+    username: string,
+    signerOrProvider: Signer | Provider | string,
+  ): Promise<AppSession> {
+    const usernameHash = utils.keccak256(utils.toUtf8Bytes(username))
+    const contract = this.dataContract.connect(signerOrProvider)
+    const response = (await contract.callStatic.getAppSessions(applicationId, usernameHash)).filter((item: any) => {
+      if (item.length < 4) {
+        return false
+      }
+
+      return Boolean(item[3])
+    })
+
+    if (response.length > 0) {
+      const data = response[0]
+
+      return {
+        applicationId,
+        address: data[1] as string,
+        isActive: data[3] as boolean,
+      }
+    } else {
+      throw new Error(`Application session for not found for id: ${applicationId}`)
+    }
   }
 
   /**

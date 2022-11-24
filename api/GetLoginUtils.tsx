@@ -4,6 +4,11 @@ import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 import { MIN_BALANCE } from '../utils/wallet'
 import { Provider } from '@ethersproject/abstract-provider'
 import { ApplicationInformation, AppSession } from './GetLogin'
+import {
+  addApplicationSession,
+  ApplicationSessionWallet,
+  getApplicationSession as getApplicationSessionStorage,
+} from '../services/storage'
 
 export enum CryptoType {
   DAI,
@@ -30,10 +35,11 @@ export function isUIBalanceEnough(balance: string): boolean {
  * Checks is enough balance on address
  *
  * @param address address to check
+ * @param ethAmount amount in ETH
  */
-export async function isEnoughBalance(address: string): Promise<boolean> {
+export async function isEnoughBalance(address: string, ethAmount: string = MIN_BALANCE): Promise<boolean> {
   const balance = await Instances.getGetLogin.dataContract.provider.getBalance(address)
-  const value = utils.parseUnits(MIN_BALANCE, 'ether')
+  const value = utils.parseUnits(ethAmount, 'ether')
 
   return balance.gte(value)
 }
@@ -211,4 +217,54 @@ export async function closeAppSession(applicationId: number): Promise<void> {
   validateCurrentWallet()
 
   await Instances.getGetLogin.closeAppSession(applicationId, Instances.currentWallet!)
+}
+
+/**
+ * Gets session for specific application from local storage with blockchain validation
+ */
+export async function getApplicationSession(
+  username: string,
+  applicationId: number,
+): Promise<ApplicationSessionWallet> {
+  validateCurrentWallet()
+  const blockchainSession = await Instances.getGetLogin.getAppSession(applicationId, username, Instances.currentWallet!)
+  const localSession = await getApplicationSessionStorage(applicationId)
+
+  if (blockchainSession.address !== localSession.address) {
+    throw new Error(
+      `Session addresses in the blockchain and in local storage do not match. Blockchain: ${blockchainSession.address}, local: ${localSession.address}`,
+    )
+  }
+
+  return localSession
+}
+
+/**
+ * Creates encrypted application session, register it in blockchain and store it locally
+ *
+ * @param applicationId application for which we want to give an access
+ * @param amountEth amount ETH to send to created session address
+ */
+export async function createAppSessionAndStore(applicationId: number, amountEth: string): Promise<Wallet> {
+  validateCurrentWallet()
+  const currentWallet = Instances.currentWallet!
+
+  if (!(await isEnoughBalance(currentWallet.address, amountEth))) {
+    throw new Error('Session creation: not enough funds in the wallet')
+  }
+
+  const wallet = Wallet.createRandom()
+  await Instances.getGetLogin.createAppSession(applicationId, wallet.address, currentWallet, {
+    isStoreApplicationSession: false,
+    applicationSessionPayment: {
+      amountEth,
+    },
+  })
+  await addApplicationSession({
+    applicationId,
+    address: wallet.address,
+    privateKey: wallet.privateKey,
+  })
+
+  return wallet
 }

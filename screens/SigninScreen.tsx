@@ -74,7 +74,7 @@ export default function SigninScreen({ navigation }: RootTabScreenProps<'TabOne'
 
         {error && (
           <Layout style={[general.rowContainer]} level="1">
-            <Text style={{ color: 'red' }}>{error}</Text>
+            <Text style={[{ color: 'red', fontWeight: 'bold' }]}>{error}</Text>
           </Layout>
         )}
 

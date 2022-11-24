@@ -1,6 +1,5 @@
-import { Contract, Signer, utils, Wallet } from 'ethers'
+import { Contract, Signer, utils, Wallet, ContractTransaction } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
-import { ContractTransaction } from '@ethersproject/contracts/src.ts'
 
 /**
  * Information for storing application session in smart contract

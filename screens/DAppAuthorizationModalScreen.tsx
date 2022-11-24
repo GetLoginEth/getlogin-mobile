@@ -38,6 +38,7 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
   const isLogged = useAppSelector(selectIsLogged)
   const initInfo = useAppSelector(selectInitInfo)
   const [error, setError] = useState('')
+  const [status, setStatus] = useState('')
 
   const isOsAllowed = ALLOWED_OSES.includes(Platform.OS)
   const id = (route.params || {}).applicationId
@@ -121,7 +122,7 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
   }
 
   const createAlert = () =>
-    Alert.alert('Confirmation', 'Really authorize?', [
+    Alert.alert('Confirmation', 'Really authorize? A paid transaction will be made in the blockchain', [
       {
         text: 'Cancel',
         style: 'cancel',
@@ -135,8 +136,10 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
     ])
 
   const onCreateSession = async () => {
-    setProcess(false)
+    setProcess(true)
+    setStatus('')
     try {
+      setStatus('Waiting for 1 confirmation...')
       const wallet = await createAppSessionAndStore(applicationId, APPLICATION_SESSION_AMOUNT)
       setSessionToShare(wallet.privateKey)
       dispatch(updateBalance(initInfo.address!))
@@ -144,7 +147,8 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
       const error = e as Error
       setError(error.message)
     } finally {
-      setProcess(true)
+      setProcess(false)
+      setStatus('')
     }
   }
 
@@ -185,6 +189,12 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
             </Layout>
           </Card>
 
+          {status && (
+            <Layout style={[general.rowContainer, { marginBottom: 20 }]} level="1">
+              <Text>{status}</Text>
+            </Layout>
+          )}
+
           {sessionToShare && (
             <Layout style={general.rowContainer} level="1">
               <Button style={[general.button]} status="primary" onPress={onShareSession}>
@@ -195,7 +205,7 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
 
           {!sessionToShare && (
             <Layout style={general.rowContainer} level="1">
-              <Button style={[general.button]} status="basic" onPress={onCancel}>
+              <Button style={[general.button]} status="basic" onPress={onCancel} disabled={process}>
                 {evaProps => <Text {...evaProps}>Cancel</Text>}
               </Button>
               <Button

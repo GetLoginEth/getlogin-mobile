@@ -40,6 +40,15 @@ export async function addApplicationSession(sessionWallet: ApplicationSessionWal
 }
 
 /**
+ * Removes application session from local storage
+ */
+export async function removeApplicationSession(applicationId: number): Promise<void> {
+  const items = (await getApplicationSessions()).filter(item => item.applicationId !== applicationId)
+
+  return AsyncStorage.setItem(APP_SESSIONS_LIST, JSON.stringify(items))
+}
+
+/**
  * Gets application session wallets list from local storage
  */
 export async function getApplicationSessions(): Promise<ApplicationSessionWallet[]> {

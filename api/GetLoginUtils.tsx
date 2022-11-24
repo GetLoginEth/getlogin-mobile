@@ -1,5 +1,5 @@
 import { Instances } from '../Instances'
-import { BigNumber, Contract, ContractReceipt, utils, Wallet } from 'ethers'
+import { BigNumber, Contract, ContractReceipt, ContractTransaction, utils, Wallet } from 'ethers'
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 import { MIN_BALANCE } from '../utils/wallet'
 import { Provider } from '@ethersproject/abstract-provider'
@@ -213,10 +213,10 @@ export async function getActiveAppSessions(username: string): Promise<AppSession
 /**
  * Closes application session for current user
  */
-export async function closeAppSession(applicationId: number): Promise<void> {
+export async function closeAppSession(applicationId: number): Promise<ContractTransaction> {
   validateCurrentWallet()
 
-  await Instances.getGetLogin.closeAppSession(applicationId, Instances.currentWallet!)
+  return Instances.getGetLogin.closeAppSession(applicationId, Instances.currentWallet!)
 }
 
 /**
@@ -254,12 +254,14 @@ export async function createAppSessionAndStore(applicationId: number, amountEth:
   }
 
   const wallet = Wallet.createRandom()
-  await Instances.getGetLogin.createAppSession(applicationId, wallet.address, currentWallet, {
-    isStoreApplicationSession: false,
-    applicationSessionPayment: {
-      amountEth,
-    },
-  })
+  await (
+    await Instances.getGetLogin.createAppSession(applicationId, wallet.address, currentWallet, {
+      isStoreApplicationSession: false,
+      applicationSessionPayment: {
+        amountEth,
+      },
+    })
+  ).wait(1)
   await addApplicationSession({
     applicationId,
     address: wallet.address,

@@ -53,4 +53,8 @@ export default StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
+  logo: {
+    width: 180,
+    height: 180,
+  },
 })

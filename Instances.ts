@@ -64,8 +64,8 @@ export class Instances {
   }
 
   static get getGetLogin() {
-    // todo get network id from .env
-    const REACT_APP_NETWORK = 'poa'
+    // const REACT_APP_NETWORK = 'poa'
+    const REACT_APP_NETWORK = 'xdai'
     const REACT_APP_NETWORKS = {
       poa: {
         id: 77,
@@ -76,7 +76,7 @@ export class Instances {
       },
       xdai: {
         id: 100,
-        jsonRpcProvider: 'https://gno.getblock.io/mainnet/?api_key=243ac6b9-e198-4dc8-a7df-ab493ec7b7cd',
+        jsonRpcProvider: 'https://xdai.fairdatasociety.org',
         currency: 'xDai',
         explorerUrl: 'https://blockscout.com/xdai/mainnet/tx/',
         bzz: { address: '0xdBF3Ea6F5beE45c02255B2c26a16F300502F68da', name: 'xBZZ' },

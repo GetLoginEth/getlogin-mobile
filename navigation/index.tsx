@@ -172,21 +172,22 @@ function LoginTabNavigator() {
     >
       <BottomTab.Screen
         name="TabOne"
-        component={SigninScreen}
+        component={SignupScreen}
         options={() => ({
           title: 'Sign in',
+          headerTitle: 'Authentication',
           tabBarIcon: ({ color }) => <TabBarIcon name="at-outline" color={color} />,
         })}
       />
 
-      <BottomTab.Screen
-        name="TabTwo"
-        component={SignupScreen}
-        options={{
-          title: 'Sign up',
-          tabBarIcon: ({ color }) => <TabBarIcon name="add-circle-outline" color={color} />,
-        }}
-      />
+      {/*<BottomTab.Screen*/}
+      {/*  name="TabTwo"*/}
+      {/*  component={SignupScreen}*/}
+      {/*  options={{*/}
+      {/*    title: 'Sign up',*/}
+      {/*    tabBarIcon: ({ color }) => <TabBarIcon name="add-circle-outline" color={color} />,*/}
+      {/*  }}*/}
+      {/*/>*/}
     </BottomTab.Navigator>
   )
 }

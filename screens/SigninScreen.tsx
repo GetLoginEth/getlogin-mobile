@@ -102,7 +102,7 @@ export default function SigninScreen({ navigation }: RootTabScreenProps<'TabOne'
               setLoading(true)
               try {
                 setError('')
-                await Instances.getGetLogin.login(username.value.trim(), password.value)
+                const result = await Instances.getGetLogin.login(username.value.trim(), password.value)
               } catch (e) {
                 const error = e as Error
                 setError(error.message)

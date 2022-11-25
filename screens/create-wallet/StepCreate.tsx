@@ -19,10 +19,12 @@ export default function StepCreate({
 
   return (
     <>
-      <AddressCopyInput address={address} />
+      <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
+        <Text category="h3">Step 1</Text>
+      </Layout>
 
-      <Layout style={[general.rowContainer, { marginTop: 5, marginBottom: 8 }]} level="1">
-        <Text style={{ color: 'red', fontSize: 12 }}>
+      <Layout style={[general.rowContainer, { marginTop: 8, marginBottom: 8 }]} level="1">
+        <Text style={{ color: 'red' }}>
           Write this phrase down in a safe place. This is the only way to access your account.
         </Text>
       </Layout>
@@ -30,6 +32,10 @@ export default function StepCreate({
       <MnemonicCopyInput mnemonic={mnemonic} />
 
       <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
+        <Text category="h3">Step 2</Text>
+      </Layout>
+
+      <Layout style={[general.rowContainer, { marginTop: 8, marginBottom: 8 }]} level="1">
         <Text>
           In order to register an account, you need to top-up your account address with at least{' '}
           <Text style={{ fontWeight: 'bold' }}>
@@ -37,6 +43,8 @@ export default function StepCreate({
           </Text>
         </Text>
       </Layout>
+
+      <AddressCopyInput address={address} />
 
       <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
         <Text>

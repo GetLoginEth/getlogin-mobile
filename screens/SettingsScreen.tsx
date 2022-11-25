@@ -2,7 +2,7 @@ import { View } from '../components/Themed'
 import general from '../styles/general'
 import React from 'react'
 import { Button, Layout, Text } from '@ui-kitten/components'
-import { Alert } from 'react-native'
+import { Alert, Linking } from 'react-native'
 import { resetLogged } from '../services/storage'
 import { useAppDispatch } from '../redux/hooks'
 import { setInitInfo } from '../redux/init/initSlice'
@@ -11,7 +11,7 @@ export default function SettingsScreen() {
   const dispatch = useAppDispatch()
 
   const createAlert = () =>
-    Alert.alert('Confirmation', 'Clear your local account?', [
+    Alert.alert('Confirmation', 'Clear your local account? Application session also will be removed', [
       {
         text: 'Cancel',
         style: 'cancel',

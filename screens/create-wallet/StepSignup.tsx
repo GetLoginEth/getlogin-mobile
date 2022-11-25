@@ -22,7 +22,7 @@ export default function StepSignup({ mnemonic, onNextStep }) {
       </Layout>
 
       <Layout style={general.rowContainer} level="1">
-        <Input style={general.input} placeholder="Username" autoCapitalize="none" {...username} />
+        <Input style={general.input} placeholder="Username" autoCapitalize="none" {...username} disabled={loading} />
       </Layout>
 
       <Layout style={general.rowContainer} level="1">

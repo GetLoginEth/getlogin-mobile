@@ -21,11 +21,17 @@ export default function StepCreate({
     <>
       <AddressCopyInput address={address} />
 
+      <Layout style={[general.rowContainer, { marginTop: 5, marginBottom: 8 }]} level="1">
+        <Text style={{ color: 'red', fontSize: 12 }}>
+          Write this phrase down in a safe place. This is the only way to access your account.
+        </Text>
+      </Layout>
+
       <MnemonicCopyInput mnemonic={mnemonic} />
 
       <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
         <Text>
-          In order to register an account, you need to top-up your account with at least{' '}
+          In order to register an account, you need to top-up your account address with at least{' '}
           <Text style={{ fontWeight: 'bold' }}>
             {MIN_BALANCE} {getCurrencyName()}
           </Text>

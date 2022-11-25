@@ -102,7 +102,13 @@ export default function SendModalScreen({ route }) {
       </Layout>
 
       <Layout style={general.rowContainer} level="1">
-        <Input style={general.input} placeholder="Username or address" autoCapitalize="none" {...usernameOrAddress} />
+        <Input
+          style={general.input}
+          placeholder="Username or address"
+          autoCapitalize="none"
+          {...usernameOrAddress}
+          disabled={isSending}
+        />
       </Layout>
 
       <Layout style={general.rowContainer} level="1">

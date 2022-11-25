@@ -17,7 +17,6 @@ export const ERROR_EMPTY_APPLICATION_ID = '"applicationId" is empty'
 export const ERROR_OS_NOT_ALLOWED = 'current OS is not allowed'
 export const ERROR_OS_URL_NOT_FOUND = 'not found implementation of the app for current OS'
 export const ERROR_APP_PACKAGE_NAME_INCORRECT = 'external app package name is not correct'
-export const ERROR_USER_NOT_LOGGED = 'user not logged to make this action'
 export const ALLOWED_OSES = ['android', 'ios']
 
 function notEnoughErrorText(): string {
@@ -59,8 +58,6 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
       const username = initInfo.username!
 
       if (!username) {
-        setError(ERROR_USER_NOT_LOGGED)
-
         return
       }
 
@@ -161,7 +158,7 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
   return (
     <View style={[general.container]}>
       <Layout style={{ ...general.rowContainer }} level="1">
-        <Text style={[general.text, general.greenText, { marginBottom: 20 }]} category="h3">
+        <Text style={[general.text, general.greenText, { marginBottom: 10 }]} category="h3">
           DApp Authorization
         </Text>
       </Layout>

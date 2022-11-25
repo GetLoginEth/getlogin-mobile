@@ -12,7 +12,7 @@ With this combination of technologies, applications can be built that can act as
 
 # Screens
 
-![Screen 1](https://github.com/GetLoginEth/getlogin-mobile/raw/main/demo/screen1.jpg | width=300 "Screen 1")
+<img src="https://github.com/GetLoginEth/getlogin-mobile/raw/main/demo/screen1.jpg" width="300">
 
 # Features
 

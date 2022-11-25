@@ -12,7 +12,6 @@ import { Ionicons } from '@expo/vector-icons'
 import balanceBack from '../assets/images/wallet-back.png'
 import { selectBalance, updateBalance } from '../redux/app/appSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { Instances } from '../Instances'
 import { prepareBalance } from '../utils/ui'
 import general from '../styles/general'
 import { Layout, Text } from '@ui-kitten/components'
@@ -59,7 +58,7 @@ export default function WalletScreen({ navigation }) {
               source={balanceBack}
               imageStyle={{ borderRadius: 16 }}
               resizeMode="cover"
-              style={styles.balanceBack}
+              style={[styles.balanceBack, general.shadowProp]}
             >
               <Text style={styles.balanceText}>
                 {prepareBalance(balance.xdai)} {getCurrencyName()}
@@ -80,6 +79,9 @@ export default function WalletScreen({ navigation }) {
               <View style={styles.walletButton}>
                 <Ionicons style={styles.walletIcon} name="arrow-down-circle-outline" size={60} color="black" />
                 <Text style={styles.walletButtonTitle}>Receive</Text>
+                <Text style={{ textAlign: 'center', fontSize: 12, marginTop: 5 }} appearance="hint">
+                  From any address
+                </Text>
               </View>
             </Pressable>
 
@@ -92,6 +94,9 @@ export default function WalletScreen({ navigation }) {
               <View style={styles.walletButton}>
                 <Ionicons style={styles.walletIcon} name="arrow-up-circle-outline" size={60} color="black" />
                 <Text style={styles.walletButtonTitle}>Send</Text>
+                <Text style={{ textAlign: 'center', fontSize: 12, marginTop: 5 }} appearance="hint">
+                  To any address
+                </Text>
               </View>
             </Pressable>
           </View>
@@ -155,6 +160,6 @@ const styles = StyleSheet.create({
     borderColor: '#d7d7d7',
     borderRadius: 16,
     width: 150,
-    height: 120,
+    height: 130,
   },
 })

@@ -29,3 +29,13 @@ With this combination of technologies, applications can be built that can act as
 **Application session** is an Ethereum-based wallet that is funded with a safe amount of funds. The address is registered in the smart contract as an address operating on behalf of the user. Such an address can be checked for validity in smart contracts created on Solidity.
 
 An example of such a smart contract can be seen in the [demo project](https://github.com/GetLoginEth/login-example/blob/master/contract/main.sol).
+
+# Deploy
+
+`npm i`
+
+`eas build`
+
+`eas submit --platform android`
+
+`eas submit --platform ios`

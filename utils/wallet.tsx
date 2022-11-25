@@ -1,11 +1,10 @@
-import { Wallet } from 'ethers'
-
 export const MNEMONIC_WORDS = 12
 export const USERNAME_MIN_LENGTH = 3
 export const PASSWORD_MIN_LENGTH = 8
-// todo fill from .env
 // minimum balance for registration
-export const MIN_BALANCE = '0.01'
+export const MIN_BALANCE = '0.1'
+// default value for application session top up
+export const APPLICATION_SESSION_AMOUNT = '0.02'
 
 export function isMnemonicLength(mnemonic: string): boolean {
   return (
@@ -14,11 +13,4 @@ export function isMnemonicLength(mnemonic: string): boolean {
       .map(item => item.trim())
       .filter(item => Boolean(item)).length === MNEMONIC_WORDS
   )
-}
-
-/**
- * Extract address from mnemonic phrase
- */
-export function getAddressFromMnemonic(mnemonic: string): string {
-  return Wallet.fromMnemonic(mnemonic).address
 }

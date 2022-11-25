@@ -19,6 +19,7 @@ import { Layout, Text } from '@ui-kitten/components'
 import React, { useEffect } from 'react'
 import signupStyles from '../styles/signup'
 import { selectInitInfo } from '../redux/init/initSlice'
+import { getCurrencyName, getTokenName } from '../api/GetLoginUtils'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -61,10 +62,10 @@ export default function WalletScreen({ navigation }) {
               style={styles.balanceBack}
             >
               <Text style={styles.balanceText}>
-                {prepareBalance(balance.xdai)} {Instances.data?.currency || ''}
+                {prepareBalance(balance.xdai)} {getCurrencyName()}
               </Text>
               <Text style={styles.balanceTextSmall}>
-                {prepareBalance(balance.xbzz)} {Instances.data?.bzz.name || ''}
+                {prepareBalance(balance.xbzz)} {getTokenName()}
               </Text>
             </ImageBackground>
           </View>

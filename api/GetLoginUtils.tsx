@@ -1,5 +1,5 @@
 import { Instances } from '../Instances'
-import { BigNumber, Contract, ContractReceipt, ContractTransaction, utils, Wallet } from 'ethers'
+import { BigNumber, Contract, ContractReceipt, ContractTransaction, Signer, utils, Wallet } from 'ethers'
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 import { MIN_BALANCE } from '../utils/wallet'
 import { Provider } from '@ethersproject/abstract-provider'
@@ -24,11 +24,13 @@ export function validateCurrentWallet(): void {
 /**
  * Checks is enough balance by UI value of balance
  */
-export function isUIBalanceEnough(balance: string): boolean {
+export function isUIBalanceEnough(balance: string, ethAmount: string = MIN_BALANCE): boolean {
+  const zero = utils.parseUnits('0', 'ether')
   const bnBalance = utils.parseUnits(balance, 'ether')
-  const value = utils.parseUnits(MIN_BALANCE, 'ether')
+  const value = utils.parseUnits(ethAmount, 'ether')
 
-  return bnBalance.gte(value)
+  // returns true if and only if `ethAmount` > 0 and the value of `balance` ≥ `ethAmount`.
+  return value.gt(zero) && bnBalance.gte(value)
 }
 
 /**
@@ -112,9 +114,9 @@ export function isEthereumAddress(address: string): boolean {
  * Get ERC-20 contract instance based on address and provider
  *
  * @param address address of the contract
- * @param provider provider for interacting with the contract
+ * @param signerOrProvider signer for sending transactions
  */
-export function getErc20Contract(address: string, provider: Provider): Contract {
+export function getErc20Contract(address: string, signerOrProvider: Signer | Provider): Contract {
   const abi = [
     // Read-Only Functions
     'function balanceOf(address owner) view returns (uint256)',
@@ -126,7 +128,7 @@ export function getErc20Contract(address: string, provider: Provider): Contract 
     'event Transfer(address indexed from, address indexed to, uint amount)',
   ]
 
-  return new Contract(address, abi, provider)
+  return new Contract(address, abi, signerOrProvider)
 }
 
 /**
@@ -137,7 +139,7 @@ export function getErc20Contract(address: string, provider: Provider): Contract 
  */
 export async function getTokenBalance(tokenAddress: string, userAddress: string): Promise<BigNumber> {
   validateCurrentWallet()
-  const erc20 = getErc20Contract(tokenAddress, Instances.currentWallet!.provider)
+  const erc20 = getErc20Contract(tokenAddress, Instances.currentWallet!)
 
   return erc20.balanceOf(userAddress)
 }
@@ -148,12 +150,18 @@ export async function getTokenBalance(tokenAddress: string, userAddress: string)
  * @param address address of the receiver
  * @param tokenAddress address of the token smart contract
  * @param amount amount tokens to transfer
+ * @param unit unit number
  */
-export async function sendToken(address: string, tokenAddress: string, amount: string): Promise<TransactionResponse> {
+export async function sendToken(
+  address: string,
+  tokenAddress: string,
+  amount: string,
+  unit = 16,
+): Promise<TransactionResponse> {
   validateCurrentWallet()
-  const erc20 = getErc20Contract(address, Instances.currentWallet!.provider)
+  const erc20 = getErc20Contract(tokenAddress, Instances.currentWallet!)
 
-  return erc20.transfer(address, utils.parseUnits(amount))
+  return erc20.transfer(address, utils.parseUnits(amount, unit))
 }
 
 /**
@@ -269,4 +277,18 @@ export async function createAppSessionAndStore(applicationId: number, amountEth:
   })
 
   return wallet
+}
+
+/**
+ * Gets network currency name
+ */
+export function getCurrencyName(): string {
+  return Instances.data?.currency || ''
+}
+
+/**
+ * Gets token name
+ */
+export function getTokenName(): string {
+  return Instances.data?.bzz.name || ''
 }

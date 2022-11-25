@@ -1,11 +1,23 @@
 import { Keyboard, TouchableWithoutFeedback } from 'react-native'
 import React from 'react'
-import { Button, Icon, Input, Layout } from '@ui-kitten/components'
+import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components'
 import { utils } from 'ethers'
 import { Instances } from '../Instances'
 import general from '../styles/general'
 import * as Clipboard from 'expo-clipboard'
 import { getTokenBalance } from '../api/GetLoginUtils'
+
+export const ErrorText = ({ text }: { text: string }) => (
+  <Layout style={[general.rowContainer, { marginBottom: 20 }]} level="1">
+    <Text style={[{ color: 'red', fontWeight: 'bold' }]}>Error: {text}</Text>
+  </Layout>
+)
+
+export const StatusText = ({ text }: { text: string }) => (
+  <Layout style={[general.rowContainer, { marginTop: 10, marginBottom: 10 }]} level="1">
+    <Text>{text}</Text>
+  </Layout>
+)
 
 export const CopyOutline = (props: any) => <Icon {...props} name="copy-outline" />
 
@@ -86,7 +98,7 @@ export async function getUIBalanceBzz(address: string): Promise<string> {
     throw new Error('Bzz address: is no defined')
   }
 
-  return utils.formatEther(await getTokenBalance(contractAddress, address))
+  return utils.formatUnits(await getTokenBalance(contractAddress, address), 16)
 }
 
 /**
@@ -101,4 +113,16 @@ export function prepareBalance(balance: string) {
   } else {
     return balance
   }
+}
+
+export function parseBNStringOrZero(bnString: string): string {
+  bnString = bnString.trim()
+
+  try {
+    utils.parseUnits(bnString, 'ether')
+  } catch (e) {
+    bnString = '0'
+  }
+
+  return bnString
 }

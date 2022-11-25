@@ -85,7 +85,6 @@ export class Instances {
     const data = REACT_APP_NETWORKS[REACT_APP_NETWORK]
     const providerUrl = data.jsonRpcProvider
 
-    // todo move to state
     if (Instances.data === undefined) {
       Instances.data = data
     }

@@ -7,7 +7,7 @@ import general from '../styles/general'
 import { Button, Layout, Text } from '@ui-kitten/components'
 import { selectDappsInfo, updateBalance, updateDappsSessionsList } from '../redux/app/appSlice'
 import { closeAppSession } from '../api/GetLoginUtils'
-import { LoaderOutline } from '../utils/ui'
+import { ErrorText, LoaderOutline, StatusText } from '../utils/ui'
 import { selectInitInfo } from '../redux/init/initSlice'
 import { removeApplicationSession } from '../services/storage'
 
@@ -58,11 +58,7 @@ export default function AppSessionModalScreen({ route, navigation }) {
 
   return (
     <View style={[general.container, { alignItems: 'center' }]}>
-      {error && (
-        <Layout style={[general.rowContainer, { marginBottom: 20 }]} level="1">
-          <Text style={[{ color: 'red', fontWeight: 'bold' }]}>Error: {error}</Text>
-        </Layout>
-      )}
+      {error && <ErrorText text={error} />}
 
       <Layout style={{ ...general.rowContainer }} level="1">
         <Text style={[general.text, general.greenText, { marginBottom: 20 }]} category="h3">
@@ -74,11 +70,7 @@ export default function AppSessionModalScreen({ route, navigation }) {
         <Text style={[general.text, { marginBottom: 20 }]}>{application?.description || '...'}</Text>
       </Layout>
 
-      {status && (
-        <Layout style={[general.rowContainer, { marginBottom: 20 }]} level="1">
-          <Text>{status}</Text>
-        </Layout>
-      )}
+      {status && <StatusText text={status} />}
 
       <Layout style={general.rowContainer} level="1">
         <Button

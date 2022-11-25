@@ -1,8 +1,9 @@
 import { Button, Layout, Text } from '@ui-kitten/components'
 import general from '../../styles/general'
 import React, { useState } from 'react'
-import { isUIBalanceEnough } from '../../api/GetLoginUtils'
+import { getCurrencyName, isUIBalanceEnough } from '../../api/GetLoginUtils'
 import { AddressCopyInput, getUIBalance, LoaderOutline, MnemonicCopyInput } from '../../utils/ui'
+import { MIN_BALANCE } from '../../utils/wallet'
 
 export default function StepCreate({
   mnemonic,
@@ -25,13 +26,18 @@ export default function StepCreate({
       <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
         <Text>
           In order to register an account, you need to top-up your account with at least{' '}
-          <Text style={{ fontWeight: 'bold' }}>0.01 xDai</Text>
+          <Text style={{ fontWeight: 'bold' }}>
+            {MIN_BALANCE} {getCurrencyName()}
+          </Text>
         </Text>
       </Layout>
 
       <Layout style={[general.rowContainer, { marginTop: 15 }]} level="1">
         <Text>
-          Current balance: <Text style={{ fontWeight: 'bold' }}>{currentBalance} xDai</Text>
+          Current balance:{' '}
+          <Text style={{ fontWeight: 'bold' }}>
+            {currentBalance} {getCurrencyName()}
+          </Text>
         </Text>
       </Layout>
 

@@ -7,10 +7,11 @@ import general from '../styles/general'
 import { Button, Card, Layout, Text } from '@ui-kitten/components'
 import { getDappInfo, selectDappsInfo, updateBalance } from '../redux/app/appSlice'
 import { selectInitInfo, selectIsLogged } from '../redux/init/initSlice'
-import { createAppSessionAndStore, getApplicationSession, isEnoughBalance } from '../api/GetLoginUtils'
-import { LoaderOutline } from '../utils/ui'
+import { createAppSessionAndStore, getApplicationSession, getCurrencyName, isEnoughBalance } from '../api/GetLoginUtils'
+import { ErrorText, LoaderOutline, StatusText } from '../utils/ui'
 import * as Linking from 'expo-linking'
 import { Instances } from '../Instances'
+import { APPLICATION_SESSION_AMOUNT } from '../utils/wallet'
 
 export const ERROR_EMPTY_APPLICATION_ID = '"applicationId" is empty'
 export const ERROR_OS_NOT_ALLOWED = 'current OS is not allowed'
@@ -18,12 +19,9 @@ export const ERROR_OS_URL_NOT_FOUND = 'not found implementation of the app for c
 export const ERROR_APP_PACKAGE_NAME_INCORRECT = 'external app package name is not correct'
 export const ERROR_USER_NOT_LOGGED = 'user not logged to make this action'
 export const ALLOWED_OSES = ['android', 'ios']
-export const APPLICATION_SESSION_AMOUNT = '0.01'
 
 function notEnoughErrorText(): string {
-  return `you don't have enough balance for the action. You must have more than ${APPLICATION_SESSION_AMOUNT} ${
-    Instances.data?.currency || ''
-  }`
+  return `you don't have enough balance for the action. You must have more than ${APPLICATION_SESSION_AMOUNT} ${getCurrencyName()}`
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -168,11 +166,7 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
         </Text>
       </Layout>
 
-      {error && (
-        <Layout style={[general.rowContainer, { marginBottom: 20 }]} level="1">
-          <Text style={[{ color: 'red', fontWeight: 'bold' }]}>Error: {error}</Text>
-        </Layout>
-      )}
+      {error && <ErrorText text={error} />}
 
       {!error && isLogged && (
         <>
@@ -189,11 +183,7 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
             </Layout>
           </Card>
 
-          {status && (
-            <Layout style={[general.rowContainer, { marginBottom: 20 }]} level="1">
-              <Text>{status}</Text>
-            </Layout>
-          )}
+          {status && <StatusText text={status} />}
 
           {sessionToShare && (
             <Layout style={general.rowContainer} level="1">

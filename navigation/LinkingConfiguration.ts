@@ -17,7 +17,7 @@ const linking: LinkingOptions<RootStackParamList> = {
         screens: {
           TabOne: {
             screens: {
-              TabOneScreen: 'one',
+              TabOneScreen: 'dapp-authorize',
             },
           },
           TabTwo: {
@@ -28,7 +28,7 @@ const linking: LinkingOptions<RootStackParamList> = {
         },
       },
       // screens that could be opened by 3rd-party app
-      DAppAuthorizationModal: 'dapp-authorize',
+      // DAppAuthorizationModal: 'dapp-authorize',
       NotFound: '*',
     },
   },

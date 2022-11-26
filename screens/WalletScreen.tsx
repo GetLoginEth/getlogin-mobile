@@ -22,11 +22,14 @@ import { getCurrencyName, getTokenName } from '../api/GetLoginUtils'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export default function WalletScreen({ navigation }) {
+export default function WalletScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = React.useState(false)
   const balance = useAppSelector(selectBalance)
   const initInfo = useAppSelector(selectInitInfo)
   const dispatch = useAppDispatch()
+
+  const id = (route.params?.params || {}).applicationId
+  const applicationId = id ? Number(id) : 0
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true)
@@ -37,6 +40,12 @@ export default function WalletScreen({ navigation }) {
   useEffect(() => {
     onRefresh().then()
   }, [])
+
+  useEffect(() => {
+    if (applicationId && route.params?.path?.startsWith('dapp-authorize')) {
+      navigation.navigate('DAppAuthorizationModal', { applicationId })
+    }
+  }, [route.params?.path])
 
   return (
     <SafeAreaView>

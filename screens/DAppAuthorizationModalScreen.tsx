@@ -107,9 +107,9 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
   }, [application])
 
   const onShareSession = async () => {
-    // todo or maybe open specific getlogin url which makes this redirection
     try {
-      Linking.openURL(`${externalAppPackageName}?getlogin_session=${sessionToShare}`).then()
+      await Linking.openURL(`${externalAppPackageName}?getlogin_session=${sessionToShare}`)
+      navigation.navigate('TabOne')
     } catch (e) {
       const error = e as Error
       setError(error.message)

@@ -30,9 +30,36 @@ With this combination of technologies, applications can be built that can act as
 
 An example of such a smart contract can be seen in the [demo project](https://github.com/GetLoginEth/login-example/blob/master/contract/main.sol).
 
+# DApp registration
+
+* Create GetLogin account on [https://getlogin.org](https://getlogin.org)
+* Open [https://getlogin.org/developers](https://getlogin.org/developers)
+* Create new DApp
+* Under "Allowed URLs" enter your DApp supported system + DApp scheme
+```
+ios:glnotes://
+android:com.shadurin.getloginmobile
+```
+Where `glnotes://` is the protocol you have registered for your iOS application.
+
+`com.shadurin.getloginmobile` is the package name of your Android application.
+
+* Save DApp information
+
+# DApps Authorization
+
+To authorize your DApp with GetLogin, open url from your DApp
+```
+getlogin://dapp-authorize?applicationId=YOU_DAPP_ID
+```
+
+Where `YOU_DAPP_ID` is the ID received when registering your DApp.
+
+Example of the DApp implemented with Expo for iOS and Android https://github.com/GetLoginEth/login-example-expo
+
 # Deploy
 
-`npm i`
+`npm ci`
 
 `eas build`
 

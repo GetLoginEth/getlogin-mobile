@@ -109,7 +109,7 @@ export default function DAppAuthorizationModalScreen({ route, navigation }) {
   const onShareSession = async () => {
     try {
       await Linking.openURL(
-        `${externalAppPackageName}/gl?privateKey=${sessionToShare}&username=${encodeURIComponent(initInfo.username!)}`,
+        `${externalAppPackageName}gl?privateKey=${sessionToShare}&username=${encodeURIComponent(initInfo.username!)}`,
       )
       navigation.navigate('TabOne')
     } catch (e) {

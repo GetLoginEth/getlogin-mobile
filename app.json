@@ -2,7 +2,7 @@
   "expo": {
     "name": "getlogin-mobile",
     "slug": "getlogin-mobile",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "getlogin",
@@ -24,7 +24,7 @@
       "associatedDomains": ["applinks:getlogin.org"]
     },
     "android": {
-      "versionCode": 4,
+      "versionCode": 5,
       "permissions": ["CAMERA"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

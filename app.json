@@ -24,6 +24,7 @@
       "associatedDomains": ["applinks:getlogin.org"]
     },
     "android": {
+      "versionCode": 4,
       "permissions": ["CAMERA"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

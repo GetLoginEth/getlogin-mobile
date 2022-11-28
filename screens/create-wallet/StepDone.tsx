@@ -15,8 +15,7 @@ export default function StepDone({ navigation }) {
 
       <Layout style={[general.rowContainer]} level="1">
         <Text style={[general.text]}>
-          The wallet has been successfully saved on your device. Now you can close this message and start using all the
-          features.
+          The wallet has been successfully saved on your device. Now you can close this message and start using the app.
         </Text>
       </Layout>
 

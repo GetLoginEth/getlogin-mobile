@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar'
 import { Platform } from 'react-native'
 import { View } from '../../components/Themed'
 import React, { useEffect, useState } from 'react'
-import { setAccountMnemonic, setLogged } from '../../services/storage'
+import { saveAccountMnemonic, saveLogged } from '../../services/storage'
 import { Instances } from '../../Instances'
 import { Layout, Spinner } from '@ui-kitten/components'
 import { DismissKeyboard } from '../../utils/ui'
@@ -10,9 +10,9 @@ import general from '../../styles/general'
 import StepCreate from './StepCreate'
 import StepSignup from './StepSignup'
 import StepDone from './StepDone'
-import { Wallet } from 'ethers'
 import { useAppDispatch } from '../../redux/hooks'
 import { setInitInfo, setIsLogged } from '../../redux/init/initSlice'
+import { setGlobalWallet } from '../../utils/wallet'
 
 export const STEP_CREATE = 'step_create'
 export const STEP_SIGNUP = 'step_signup'
@@ -28,45 +28,52 @@ export default function CreateWalletModalScreen({ route, navigation }) {
   const [username, setUsername] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
 
-  useEffect(() => {
-    async function start() {
-      const wallet = Instances.getGetLogin.createWallet()
-      setAddress(wallet.address)
-      setMnemonic(wallet.mnemonic.phrase)
-      await setAccountMnemonic(wallet.mnemonic.phrase)
-      setIsGenerating(false)
-    }
+  /**
+   * Creates mnemonic from scratch
+   */
+  const createMnemonic = async () => {
+    const wallet = setGlobalWallet(Instances.getGetLogin.createWallet())
+    setAddress(wallet.address)
+    setMnemonic(wallet.mnemonic.phrase)
+    await saveAccountMnemonic(wallet.mnemonic.phrase)
+    setIsGenerating(false)
+  }
 
-    const { mnemonic, step, username } = route.params || {}
+  /**
+   * Import from mnemonic modal
+   */
+  const handleImport = (step: string, mnemonic: string, username: string) => {
+    setIsGenerating(false)
+    setStep(step)
+    setMnemonic(mnemonic)
+    setAddress(Instances.currentWallet!.address)
+    setUsername(username)
+  }
+
+  useEffect(() => {
+    const { step, mnemonic, username } = route.params || {}
+    const isImport = step && mnemonic && username
 
     setIsGenerating(true)
     // workaround for Wallet method that freezes screen
     setTimeout(() => {
-      if (step && mnemonic) {
-        setIsGenerating(false)
-        setStep(step)
-        setMnemonic(mnemonic)
-        setAddress(Wallet.fromMnemonic(mnemonic).address)
-
-        if (username) {
-          setUsername(username)
-        }
+      if (isImport) {
+        handleImport(step, mnemonic, username)
       } else {
-        start().then()
+        createMnemonic().then()
       }
     }, 1)
   }, [])
 
   useEffect(() => {
+    // save information about created wallet and navigate to the main window after all steps are done (from scratch or from import)
     if (username && mnemonic && step === STEP_DONE) {
-      setLogged(username, mnemonic).then()
+      saveLogged(username, mnemonic).then()
       dispatch(setIsLogged(true))
       dispatch(setInitInfo({ isLogged: true, username, mnemonic, address }))
       navigation.navigate('TabOne')
     }
   }, [username, mnemonic, step])
-
-  // todo show info about network and cost of account creation
 
   return (
     <DismissKeyboard>

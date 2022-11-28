@@ -9,11 +9,8 @@ import general from '../styles/general'
 import { useInputState } from '../utils/state'
 import signupStyles from '../styles/signup'
 import { STEP_CREATE, STEP_DONE, STEP_SIGNUP } from './create-wallet/CreateWalletModalScreen'
-import { Wallet } from 'ethers'
 import { isAddressUsed, isEnoughBalance, isUsernameRegisteredByAddressUsername } from '../api/GetLoginUtils'
-import { isMnemonicLength, USERNAME_MIN_LENGTH } from '../utils/wallet'
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { Instances } from '../Instances'
+import { isMnemonicLength, setGlobalWallet, USERNAME_MIN_LENGTH } from '../utils/wallet'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -83,23 +80,23 @@ export default function ImportMnemonicModalScreen({ navigation }) {
               setTimeout(async () => {
                 let finalStep
                 try {
-                  const rpcUrl = Instances.data?.jsonRpcProvider
-                  const wallet = Wallet.fromMnemonic(mnemonicValue).connect(new JsonRpcProvider(rpcUrl))
-                  Instances.currentWallet = wallet
+                  const wallet = setGlobalWallet(mnemonicValue)
 
                   if (await isUsernameRegisteredByAddressUsername(wallet.address, username.value)) {
+                    // user already registered
                     finalStep = () => navigateToStep(STEP_DONE)
                   } else if (await isAddressUsed(wallet.address)) {
                     mnemonicIsNotAssignedAlert()
                   } else if (await isEnoughBalance(wallet.address)) {
+                    // restoring account after app closing by mnemonic + enough balance
                     finalStep = () => navigateToStep(STEP_SIGNUP)
                   } else {
+                    // restoring account after app closing by mnemonic and NOT enough balance
                     finalStep = () => navigateToStep(STEP_CREATE)
                   }
                   // eslint-disable-next-line no-empty
                 } catch (e) {
                 } finally {
-                  // closeLoader(navigation)
                   setLoading(false)
 
                   if (finalStep) {

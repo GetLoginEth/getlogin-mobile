@@ -52,7 +52,7 @@ export async function isEnoughBalance(address: string, ethAmount: string = MIN_B
  * @param username username to register
  * @param mnemonic wallet with balance
  */
-export async function signup(username: string, mnemonic: string): Promise<ContractReceipt> {
+export async function signup(username: string, mnemonic: string): Promise<ContractTransaction> {
   const rpcUrl = Instances.data?.jsonRpcProvider
 
   if (!rpcUrl) {
@@ -69,7 +69,7 @@ export async function signup(username: string, mnemonic: string): Promise<Contra
     throw new Error(`Is not enough balance on the address: ${wallet.address}`)
   }
 
-  return (await Instances.getGetLogin.createUser(username, wallet)).wait()
+  return Instances.getGetLogin.createUser(username, wallet)
 }
 
 /**

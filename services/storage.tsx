@@ -77,7 +77,7 @@ export async function getApplicationSession(applicationId: number): Promise<Appl
   return result
 }
 
-export async function setLogged(username: string, mnemonic: string): Promise<void> {
+export async function saveLogged(username: string, mnemonic: string): Promise<void> {
   return AsyncStorage.multiSet([
     [ACCOUNT_USERNAME_KEY, username],
     [ACCOUNT_MNEMONIC_KEY, mnemonic],
@@ -103,7 +103,7 @@ export async function getLogged(): Promise<LoggedUser> {
   }
 }
 
-export async function setAccountMnemonic(mnemonic: string): Promise<void> {
+export async function saveAccountMnemonic(mnemonic: string): Promise<void> {
   // todo save to encrypted storage
   return AsyncStorage.setItem(ACCOUNT_MNEMONIC_KEY, mnemonic)
 }

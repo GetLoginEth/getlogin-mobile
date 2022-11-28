@@ -64,8 +64,8 @@ export class Instances {
   }
 
   static get getGetLogin() {
-    // const REACT_APP_NETWORK = 'poa'
-    const REACT_APP_NETWORK = 'xdai'
+    const REACT_APP_NETWORK = 'poa'
+    // const REACT_APP_NETWORK = 'xdai'
     const REACT_APP_NETWORKS = {
       poa: {
         id: 77,

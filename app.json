@@ -19,6 +19,7 @@
       "**/*"
     ],
     "ios": {
+      "buildNumber": "5",
       "supportsTablet": true,
       "bundleIdentifier": "com.shadurin.getloginmobile",
       "associatedDomains": ["applinks:getlogin.org"]

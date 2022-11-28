@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "getlogin-mobile",
+    "name": "GetLogin",
     "slug": "getlogin-mobile",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "getlogin",
@@ -19,13 +19,13 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "5",
+      "buildNumber": "6",
       "supportsTablet": true,
       "bundleIdentifier": "com.shadurin.getloginmobile",
       "associatedDomains": ["applinks:getlogin.org"]
     },
     "android": {
-      "versionCode": 5,
+      "versionCode": 6,
       "permissions": ["CAMERA"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

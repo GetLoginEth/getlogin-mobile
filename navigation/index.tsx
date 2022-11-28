@@ -173,7 +173,7 @@ function LoginTabNavigator() {
         name="TabOne"
         component={SignupScreen}
         options={() => ({
-          title: 'Sign in',
+          title: 'Authentication',
           headerTitle: 'Authentication',
           tabBarIcon: ({ color }) => <TabBarIcon name="at-outline" color={color} />,
         })}
